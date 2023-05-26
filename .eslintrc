@@ -1,6 +1,22 @@
 {
+  // "plugins": [
+  // ],
+  "rules": {
+    "@typescript-eslint/no-var-requires": 0,
+    "no-console": "off",
+    "vue/no-unused-refs": "off",
+    "curly": "off",
+    "@typescript-eslint/brace-style": "off",
+    "antfu/top-level-function": "off",
+    "antfu/if-newline": "off"
+    // "multi-line": 0
+  },
+  "env": {
+    "browser": true
+  },
   "extends": [
-    // "plugin:tailwindcss/recommended",
-    "@antfu"
+    "@antfu",
+    "@unocss"
+    // "@nuxtjs/eslint-config-typescript"
   ]
 }
