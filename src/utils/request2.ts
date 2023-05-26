@@ -1,4 +1,5 @@
 import { hash } from 'ohash'
+import type { UseFetchOptions } from '#app'
 
 // 可以把返回数据data里面可能含有的类型列出来
 export interface ResData<T> {
@@ -12,6 +13,10 @@ export interface ResOptions<T> {
   code?: number
   message?: string
 }
+
+export type HttpOption<T> = UseFetchOptions<ResOptions<ResData<T>>>
+
+// type DataOption = AsyncData<any, any> & ResOptions<ResData<any>>
 
 /**
  * api请求封装
@@ -33,7 +38,7 @@ async function fetch(url: string, options?: any, headers?: any) {
     // console.log('options', options)
     const { data, pending, error, refresh } = await useFetch(reqUrl, { ...options, headers: customHeaders })
     const result = data.value as ResOptions<ResData<any>>
-    console.log('result: ', result)
+    // console.log('result: ', result)
     // console.log('error value:', error.value)
     if (error.value || !result || (result && result.code !== 0)) {
       console.log('throw error')
@@ -53,7 +58,7 @@ async function fetch(url: string, options?: any, headers?: any) {
 }
 
 export default new class Http {
-  get(url: string, params?: any, options?: object, headers?: any) {
+  get<T>(url: string, params?: any, options?: HttpOption<T>, headers?: any) {
     return fetch(url, { method: 'get', params, ...options }, headers)
   }
 

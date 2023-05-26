@@ -3,6 +3,7 @@ const postList = ref<any>([])
 // const pending = ref(false)
 const postOut = ref(false)
 const params = reactive({ page: 1, pageSize: 5 })
+const { getPost, getHotPost, getAllTags } = useApi()
 
 // const { data } = await useFetch(() => 'http://localhost:4000/api/post', {
 //   key: `post-${params.page}`,
@@ -10,48 +11,20 @@ const params = reactive({ page: 1, pageSize: 5 })
 // })
 
 // 服务端获取数据
-const [{ data: postResult, pending }, { data: hotResult }] = await Promise.all([
-  getPost({}, { key: `post-${params.page}`, query: params }),
+// post.getPost()
+const [{ data: postResult, pending }, { data: hotResult }, { data: tagsResult }] = await Promise.all([
+  getPost({ key: `post-${params.page}`, query: params }),
   getHotPost(),
-  // getAllTags(),
+  getAllTags(),
 ])
 
-watch(() => postResult, () => {
-  console.log('rfsdfdsfsd')
-})
-
-console.log('postResult', postResult.value)
-
-const total = ref(postResult.value.result.total)
-// const tags = ref(tagsResult.value.result.tags)
-const tags = ref([])
-const hotList = ref(hotResult.value.result.items)
-postList.value = postResult.value.result.items
-
-// 加载更多
-function loadMore() {
-  if (params.page < Math.ceil(total / params.pageSize)) {
-    params.page++
-    fetchPost()
-  } else {
-    postOut.value = true
-  }
-}
-
-// 客户端加载数据
-async function fetchPost() {
-  pending.value = true
-  const { result } = await getPost(params, { server: false })
-  postList.value = result.items
-  pending.value = false
-}
+const total = ref(postResult.value?.result.total)
+const tags = ref(tagsResult.value?.result.tags)
+const hotList = ref(hotResult.value?.result.items)
+postList.value = postResult.value?.result.items
 
 const changePage = async (value: number) => {
   params.page = value
-  // pending.value = false
-  // refresh()
-  // fetchPost()
-
   window.scrollTo({
     top: 0,
   })
@@ -66,7 +39,7 @@ const changePage = async (value: number) => {
       <div v-if="postResult?.result" class="w-full md:(mb-16 mr-10 w-224)">
         <PostItem v-for="item in postResult.result.items" v-show="!pending" :key="item._id" :item="item" />
         <ProfilePostItem v-for="item in 4" v-show="pending" :key="item" />
-        <div v-show="false" class="flex-center text-center">
+        <!-- <div v-show="false" class="flex-center text-center">
           <div
             v-show="!pending && !postOut"
             class="w-32 cursor-pointer select-none border-1 border-gray-300 rounded-full border-solid leading-11 color-gray-600 hover:(border-yellow-400 shadow-moreBtn) dark:(color-gray-50)"
@@ -78,9 +51,9 @@ const changePage = async (value: number) => {
             没有更多了~
           </div>
           <NuxtIcon v-show="pending && !postOut" name="loading" class="text-5xl" filled />
-        </div>
+        </div> -->
         <Pagination
-          :total="20" :current-page="params.page" :page-size="params.pageSize"
+          :total="total" :current-page="params.page" :page-size="params.pageSize"
           @current-change="changePage"
         />
       </div>
@@ -94,7 +67,7 @@ const changePage = async (value: number) => {
         </h2>
         <div>
           <NuxtLink
-            v-for="item in hotList" :key="item" to="/post/123"
+            v-for="item in hotList" :key="item._id" to="/post/123"
             class="relative mb-4 box-border block overflow-hidden rounded-lg no-underline"
           >
             <div class="absolute inset-0 bg-[url(@/assets/images/post-cover.jpg)] bg-cover blur-md" />
