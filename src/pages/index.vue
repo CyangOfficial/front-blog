@@ -3,10 +3,12 @@ import release_img1 from '@/assets/images/blog-section-cover.jpg'
 import release_img2 from '@/assets/images/admin-1.jpg'
 import release_img3 from '@/assets/images/coding.jpg'
 
-let postList = ref<any>([])
+const { getPost } = useApi()
 
-const { result } = await getPost({ page: 1, pageSize: 5 })
-postList = result.items
+let postList = ref<any>([])
+const params = reactive({ page: 1, pageSize: 5 })
+const { data } = await getPost({ query: params })
+postList = data.value?.result.items
 
 const newRelease = ref([
   {

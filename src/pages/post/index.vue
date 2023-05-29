@@ -1,27 +1,13 @@
 <script setup lang="ts">
-const postList = ref<any>([])
-// const pending = ref(false)
-const postOut = ref(false)
 const params = reactive({ page: 1, pageSize: 5 })
 const { getPost, getHotPost, getAllTags } = useApi()
 
-// const { data } = await useFetch(() => 'http://localhost:4000/api/post', {
-//   key: `post-${params.page}`,
-//   params,
-// })
-
 // 服务端获取数据
-// post.getPost()
 const [{ data: postResult, pending }, { data: hotResult }, { data: tagsResult }] = await Promise.all([
   getPost({ key: `post-${params.page}`, query: params }),
   getHotPost(),
   getAllTags(),
 ])
-
-const total = ref(postResult.value?.result.total)
-const tags = ref(tagsResult.value?.result.tags)
-const hotList = ref(hotResult.value?.result.items)
-postList.value = postResult.value?.result.items
 
 const changePage = async (value: number) => {
   params.page = value
@@ -36,8 +22,8 @@ const changePage = async (value: number) => {
     <CommonBanner title="文 章" img-name="Attack-on-Titan.jpg" />
     <div class="mx-auto mt-14 flex px-3 container xl:max-w-7xl md:(px-0)">
       <!-- 文章 -->
-      <div v-if="postResult?.result" class="w-full md:(mb-16 mr-10 w-224)">
-        <PostItem v-for="item in postResult.result.items" v-show="!pending" :key="item._id" :item="item" />
+      <div class="w-full md:(mb-16 mr-10 w-224)">
+        <PostItem v-for="item in postResult?.result.items" v-show="!pending" :key="item._id" :item="item" />
         <ProfilePostItem v-for="item in 4" v-show="pending" :key="item" />
         <!-- <div v-show="false" class="flex-center text-center">
           <div
@@ -53,7 +39,7 @@ const changePage = async (value: number) => {
           <NuxtIcon v-show="pending && !postOut" name="loading" class="text-5xl" filled />
         </div> -->
         <Pagination
-          :total="total" :current-page="params.page" :page-size="params.pageSize"
+          :total="postResult?.result.total" :current-page="params.page" :page-size="params.pageSize"
           @current-change="changePage"
         />
       </div>
@@ -67,7 +53,7 @@ const changePage = async (value: number) => {
         </h2>
         <div>
           <NuxtLink
-            v-for="item in hotList" :key="item._id" to="/post/123"
+            v-for="item in hotResult?.result.items" :key="item._id" to="/post/123"
             class="relative mb-4 box-border block overflow-hidden rounded-lg no-underline"
           >
             <div class="absolute inset-0 bg-[url(@/assets/images/post-cover.jpg)] bg-cover blur-md" />
@@ -89,7 +75,7 @@ const changePage = async (value: number) => {
         </h2>
         <div class="flex flex-wrap">
           <NuxtLink
-            v-for="item in tags" :key="item" :to="`/search?tag=${item}`"
+            v-for="item in tagsResult?.result.tags" :key="item" :to="`/search?tag=${item}`"
             class="mb-2.5 mr-2.5 block select-none rounded bg-emerald-600/10 px-1.5 text-sm leading-6 color-emerald-600 no-underline hover:(bg-emerald-600/20)"
           >
             {{ item }}

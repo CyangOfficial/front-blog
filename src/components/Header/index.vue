@@ -53,6 +53,7 @@ const searchPost = async () => {
     },
   }, {
     replace: true,
+    // external: true,
   })
   isSearch.value = false
   keyword.value = ''

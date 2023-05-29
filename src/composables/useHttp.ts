@@ -1,12 +1,12 @@
 // import { Message } from '@arco-design/web-vue'
-import type { FetchResponse, SearchParameters } from 'ofetch'
+// import type { FetchOptions } from 'ofetch'
 import type { Ref } from 'vue'
 import type { UseFetchOptions } from '#app'
 // import { useUserStore } from '~/stores/user.store'
 // import IconEmoticonDead from '~icons/mdi/emoticon-dead'
 
 export interface ResData<T> {
-  items: T[]
+  items: T
   [x: string]: any
 }
 
@@ -20,49 +20,48 @@ type UrlType = string | Request | Ref<string | Request> | (() => string | Reques
 
 export type HttpOption<T> = UseFetchOptions<ResOptions<ResData<T>>>
 
-const handleError = <T>(response: FetchResponse<ResOptions<T>> & FetchResponse<ResponseType>) => {
-  const err = (text: string) => {
-    // Message.error({
-    //   content: response?._data?.message ?? text,
-    //   icon: () => h(IconEmoticonDead),
-    // })
-  }
-  if (!response._data) {
-    err('请求超时，服务器无响应！')
-    return
-  }
-  // const userStore = useUserStore()
-  const handleMap: { [key: number]: () => void } = {
-    404: () => err('服务器资源不存在'),
-    500: () => err('服务器内部错误'),
-    403: () => err('没有权限访问该资源'),
-    401: () => {
-      err('登录状态已过期，需要重新登录')
-      // userStore.clearUserInfo()
-      // TODO 跳转实际登录页
-      navigateTo('/')
-    },
-  }
-  handleMap[response.status] ? handleMap[response.status]() : err('未知错误！')
-}
+// const handleError = <T>(response: FetchResponse<ResOptions<T>> & FetchResponse<ResponseType>) => {
+//   const err = (text: string) => {
+//     // Message.error({
+//     //   content: response?._data?.message ?? text,
+//     //   icon: () => h(IconEmoticonDead),
+//     // })
+//   }
+//   if (!response._data) {
+//     err('请求超时，服务器无响应！')
+//     return
+//   }
+//   // const userStore = useUserStore()
+//   const handleMap: { [key: number]: () => void } = {
+//     404: () => err('服务器资源不存在'),
+//     500: () => err('服务器内部错误'),
+//     403: () => err('没有权限访问该资源'),
+//     401: () => {
+//       err('登录状态已过期，需要重新登录')
+//       // userStore.clearUserInfo()
+//       // TODO 跳转实际登录页
+//       navigateTo('/')
+//     },
+//   }
+//   handleMap[response.status] ? handleMap[response.status]() : err('未知错误！')
+// }
 // get方法传递数组形式参数
-const paramsSerializer = (params?: SearchParameters) => {
-  if (!params)
-    return
+// const paramsSerializer = (params?: SearchParameters) => {
+//   if (!params)
+//     return
 
-  const query = useCloneDeep(params)
-  Object.entries(query).forEach(([key, val]) => {
-    if (typeof val === 'object' && Array.isArray(val) && val !== null) {
-      query[`${key}[]`] = toRaw(val).map((v: any) => JSON.stringify(v))
-      delete query[key]
-    }
-  })
-  return query
-}
-const fetch = <T>(url: UrlType, option: UseFetchOptions<ResOptions<ResData<T>>> | any) => {
+//   const query = useCloneDeep(params)
+//   Object.entries(query).forEach(([key, val]) => {
+//     if (typeof val === 'object' && Array.isArray(val) && val !== null) {
+//       query[`${key}[]`] = toRaw(val).map((v: any) => JSON.stringify(v))
+//       delete query[key]
+//     }
+//   })
+//   return query
+// }
+const fetch = <T>(url: UrlType, option: UseFetchOptions<ResOptions<ResData<T>>>) => {
   const { public: { baseURL } } = useRuntimeConfig()
-  return useFetch<ResOptions<ResData<T>>>(url, {
-    // 请求拦截器
+  return useFetch(url, {
     onRequest({ options }) {
       // get方法传递数组形式参数
       // options.params = paramsSerializer(options.params)
@@ -78,12 +77,11 @@ const fetch = <T>(url: UrlType, option: UseFetchOptions<ResOptions<ResData<T>>> 
     },
     // 响应拦截
     onResponse({ response }) {
-      console.log('response', response._data)
       // if (response.status === 0)
       //   return response
       // 在这里判断错误
       if (response._data.code !== 0) {
-        console.log('错误错误错误错误错误')
+        console.log('错误错误错误错误错误', response._data)
         // handleError<T>(response)
         // showError({ statusCode: 404, statusMessage: 'Page Not Found' })
         throw createError({
@@ -116,19 +114,19 @@ const fetch = <T>(url: UrlType, option: UseFetchOptions<ResOptions<ResData<T>>> 
 
 // 自动导出
 export const useHttp = {
-  get: <T>(url: UrlType, params?: any, option?: HttpOption<T>) => {
+  get: <T>(url: UrlType, params: any, option: HttpOption<T>) => {
     return fetch<T>(url, { method: 'get', params, ...option })
   },
 
-  post: <T>(url: UrlType, body?: any, option?: HttpOption<T>) => {
+  post: <T>(url: UrlType, body: any, option: HttpOption<T>) => {
     return fetch<T>(url, { method: 'post', body, ...option })
   },
 
-  put: <T>(url: UrlType, body?: any, option?: HttpOption<T>) => {
+  put: <T>(url: UrlType, body: any, option?: HttpOption<T>) => {
     return fetch<T>(url, { method: 'put', body, ...option })
   },
 
-  delete: <T>(url: UrlType, body?: any, option?: HttpOption<T>) => {
+  delete: <T>(url: UrlType, body: any, option?: HttpOption<T>) => {
     return fetch<T>(url, { method: 'delete', body, ...option })
   },
 }
