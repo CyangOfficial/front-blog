@@ -1,35 +1,20 @@
 <script setup lang="ts">
 import { useDark, useToggle } from '@vueuse/core'
 
+const { $isMobile } = useNuxtApp()
+const { getAllTags } = useApi()
+
 // import { useMainStore } from '@/stores'
 // import NuxtIcons from 'nuxt-icons'
 // import House from '@/assets/svg/house.svg'
 // const { y } = useWindowScroll()
-// const tags = [
-//   'CSS3',
-//   'CSS',
-//   'HTML5',
-//   'GIT',
-//   'javascript',
-//   'Web Api',
-//   'Poem',
-//   'About Me',
-//   '正则表达式',
-//   '大事记',
-//   '汇率计算器',
-//   '面试',
-//   'Music',
-//   'Vue',
-//   'ElementUi',
-//   'VantUi',
-//   'Nest.js',
-//   '微信小程序',
-// ]
 
-// const fetch = async () => await getAllTags(),
-// const { result } = await getAllTags()
-// const tags = ref(result.tags)
 const tags = ref([])
+if ($isMobile) {
+  console.log('获取标签')
+  const { data } = await getAllTags()
+  tags.value = data.value?.result.tags
+}
 
 const mainStore = useMainStore()
 function open() {
@@ -172,6 +157,7 @@ const mobileSearch = async () => {
 
   <!-- 移动端 搜索层 -->
   <div
+    v-if="$isMobile"
     class="linear fixed left-0 top-13 z-50 w-full transform-gpu bg-white px-4 py-4 transition duration-300 md:(hidden) -translate-y-100 dark:(bg-gray-800)"
     :class="{ 'translate-y-0': isSearch }"
   >
@@ -198,6 +184,7 @@ const mobileSearch = async () => {
     >
       <NuxtIcon name="tag1" class="mr-2 align-middle text-xl leading-4" filled />标签搜索
     </h2>
+    <!-- <ClientOnly> -->
     <div class="flex flex-wrap">
       <NuxtLink
         v-for="item in tags" :key="item" :to="`/search?tag=${item}`"
@@ -207,6 +194,7 @@ const mobileSearch = async () => {
         {{ item }}
       </NuxtLink>
     </div>
+    <!-- </ClientOnly> -->
   </div>
   <!-- header search mask -->
   <div class="linear invisible fixed z-40 h-full w-full bg-black/0 backdrop-blur transition duration-300 md:(hidden)" :class="{ 'bg-black/30 !visible': isSearch }" @click="isSearch = false" />

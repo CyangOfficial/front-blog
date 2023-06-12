@@ -79,33 +79,29 @@ const fetch = <T>(url: UrlType, option: UseFetchOptions<ResOptions<ResData<T>>>)
     onResponse({ response }) {
       // if (response.status === 0)
       //   return response
-      // 在这里判断错误
+      const resData = response._data
       if (response._data.code !== 0) {
-        console.log('错误错误错误错误错误', response._data)
+        // console.log(process.server)
+        // console.log('错误错误错误错误错误', resData)
+        // showError({ statusCode: 404, statusMessage: 'Page Not Found' })
         // handleError<T>(response)
         // showError({ statusCode: 404, statusMessage: 'Page Not Found' })
-        throw createError({
-          statusCode: response._data.statusCode,
-          // statusMessage: baseURL + url,
-          message: response?._data?.message || '服务器内部错误',
-          fatal: true,
-        })
-        // return Promise.reject(response._data)
+        // throw createError({ statusCode: 404, statusMessage: 'Page Not Found' })
+        // throw createError({
+        //   statusCode: resData.statusCode,
+        //   // statusMessage: baseURL + url,
+        //   message: resData.message || '服务器内部错误',
+        //   fatal: true,
+        // })
+        // return Promise.reject(resData)
       }
       // 成功返回
-      return response._data
+      return resData
     },
     // 错误处理
     onResponseError({ response }) {
       // handleError<T>(response)
-      console.log('error response', response)
-      // throw createError({
-      //   statusCode: 500,
-      //   statusMessage: baseURL + url,
-      //   message: response?._data?.message || '服务器内部错误',
-      //   fatal: true,
-      // })
-      return Promise.reject(response?._data ?? null)
+      // console.log('error response', response)
     },
     // 合并参数
     ...option,

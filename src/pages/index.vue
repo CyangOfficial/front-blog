@@ -3,13 +3,6 @@ import release_img1 from '@/assets/images/blog-section-cover.jpg'
 import release_img2 from '@/assets/images/admin-1.jpg'
 import release_img3 from '@/assets/images/coding.jpg'
 
-const { getPost } = useApi()
-
-let postList = ref<any>([])
-const params = reactive({ page: 1, pageSize: 5 })
-const { data } = await getPost({ query: params })
-postList = data.value?.result.items
-
 const newRelease = ref([
   {
     href: 'https://github.com/CyangOfficial/nuxt-blog',
@@ -30,6 +23,28 @@ const newRelease = ref([
     img: release_img3,
   },
 ])
+
+const { getPost } = useApi()
+
+let postList = ref<any>([])
+const postEnd = ref(false)
+const pending = ref(false)
+const params = reactive({ page: 1, pageSize: 5 })
+const { data } = await getPost({ query: { ...params } })
+postList = data.value?.result.items
+
+const loadMore = async () => {
+  pending.value = true
+  params.page += 1
+  const { data } = await getPost({ query: { ...params } })
+  pending.value = false
+  const items = data.value?.result.items as Array<any>
+  postList.push(...items)
+
+  if (items.length < params.pageSize) {
+    postEnd.value = true
+  }
+}
 </script>
 
 <template>
@@ -71,8 +86,21 @@ const newRelease = ref([
       >
         <NuxtIcon name="new" class="mr-3 align-middle text-2xl leading-4 md:(mr-4 text-3xl)" filled />Latest Posts!
       </h2>
-      <div class="box-border">
+      <div class="mb-6">
         <PostItem v-for="item in postList" :key="item._id" :item="item" />
+        <div class="flex-center text-center">
+          <div
+            v-show="!pending && !postEnd"
+            class="w-28 cursor-pointer select-none border-1 border-gray-300 rounded-full border-solid leading-9 color-gray-600 md:(w-32 leading-11) hover:(border-yellow-400 shadow-moreBtn) dark:(color-gray-50)"
+            @click="loadMore"
+          >
+            加载更多
+          </div>
+          <div v-show="postEnd">
+            没有更多了~
+          </div>
+          <NuxtIcon v-show="pending && !postEnd" name="loading" class="text-5xl" filled />
+        </div>
       </div>
     </section>
   </div>

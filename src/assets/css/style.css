@@ -18,3 +18,7 @@
     -webkit-line-clamp: 5;
   }
 } */
+
+html {
+  -webkit-tap-highlight-color: rgb(0 0 0 / 0%);
+}

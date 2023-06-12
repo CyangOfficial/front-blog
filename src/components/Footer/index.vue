@@ -2,7 +2,7 @@
 </script>
 
 <template>
-  <footer class="mx-auto px-3 container xl:max-w-4xl md:(px-0)">
+  <footer class="mx-auto mt-18 px-3 container xl:max-w-4xl md:(px-0)">
     <p class="my-1 border-b-1 border-b-dotted pb-1 dark:(text-gray-50)">
       Created with <NuxtIcon class="mr-2" name="heart" filled />by Changywa
     </p>

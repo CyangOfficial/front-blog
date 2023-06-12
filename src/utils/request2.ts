@@ -31,17 +31,13 @@ async function fetch(url: string, options?: any, headers?: any) {
 
     // 设置key
     const key = hash(options + url)
-    console.log('key', key)
 
     // 可以设置默认headers例如
     const customHeaders = { token: useCookie('token').value, ...headers }
     // console.log('options', options)
     const { data, pending, error, refresh } = await useFetch(reqUrl, { ...options, headers: customHeaders })
     const result = data.value as ResOptions<ResData<any>>
-    // console.log('result: ', result)
-    // console.log('error value:', error.value)
     if (error.value || !result || (result && result.code !== 0)) {
-      console.log('throw error')
       throw createError({
         statusCode: 500,
         statusMessage: reqUrl,

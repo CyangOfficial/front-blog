@@ -10,6 +10,9 @@ dependencies:
   aplayer:
     specifier: ^1.10.1
     version: registry.npmmirror.com/aplayer@1.10.1
+  mobile-detect:
+    specifier: ^1.4.5
+    version: registry.npmmirror.com/mobile-detect@1.4.5
   nuxt-icons:
     specifier: ^3.1.0
     version: registry.npmmirror.com/nuxt-icons@3.1.0
@@ -9074,6 +9077,12 @@ packages:
       pathe: registry.npmmirror.com/pathe@1.1.0
       pkg-types: registry.npmmirror.com/pkg-types@1.0.2
       ufo: registry.npmmirror.com/ufo@1.1.1
+
+  registry.npmmirror.com/mobile-detect@1.4.5:
+    resolution: {integrity: sha512-yc0LhH6tItlvfLBugVUEtgawwFU2sIe+cSdmRJJCTMZ5GEJyLxNyC/NIOAOGk67Fa8GNpOttO3Xz/1bHpXFD/g==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/mobile-detect/-/mobile-detect-1.4.5.tgz}
+    name: mobile-detect
+    version: 1.4.5
+    dev: false
 
   registry.npmmirror.com/moment-mini@2.29.4:
     resolution: {integrity: sha512-uhXpYwHFeiTbY9KSgPPRoo1nt8OxNVdMVoTBYHfSEKeRkIkwGpO+gERmhuhBtzfaeOyTkykSrm2+noJBgqt3Hg==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/moment-mini/-/moment-mini-2.29.4.tgz}

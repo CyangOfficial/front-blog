@@ -1,20 +1,48 @@
 <script setup lang="ts">
+// type Exclude<T, U> = T extends U ? never : T
+// type A = Exclude<'key1' | 'key2', 'key2'>
+// key1 extends key2 ? never : key1
+// key2 extends key2 ? never : key1
 const params = reactive({ page: 1, pageSize: 5 })
 const { getPost, getHotPost, getAllTags } = useApi()
 
-// 服务端获取数据
-const [{ data: postResult, pending }, { data: hotResult }, { data: tagsResult }] = await Promise.all([
+const [{ data: postResult, pending, error: postErr }, { data: hotResult, error: hotErr }, { data: tagsResult, error: tagErr }] = await Promise.all([
   getPost({ key: `post-${params.page}`, query: params }),
   getHotPost(),
   getAllTags(),
-])
+]);
+
+[postErr, hotErr, tagErr].forEach((error) => {
+  if (error.value) {
+    const errData = error.value.data
+    throw createError({
+      statusCode: errData.statusCode,
+      // statusMessage: baseURL + url,
+      message: errData.message || '服务器内部错误',
+      fatal: true,
+    })
+  }
+})
+
+// if ([postErr].some(item => item.value)) {
+//   throw createError({
+//     statusCode: item.value.statusCode,
+//     // statusMessage: baseURL + url,
+//     message: item.value.message || '服务器内部错误',
+//     fatal: true,
+//   })
+// }
 
 const changePage = async (value: number) => {
   params.page = value
-  window.scrollTo({
-    top: 0,
-  })
 }
+watch(() => pending.value, (val) => {
+  if (!val) {
+    window.scrollTo({
+      top: 0,
+    })
+  }
+})
 </script>
 
 <template>
@@ -52,21 +80,7 @@ const changePage = async (value: number) => {
           <NuxtIcon name="ranking" class="mr-4 align-middle text-3xl leading-4" filled />排行榜
         </h2>
         <div>
-          <NuxtLink
-            v-for="item in hotResult?.result.items" :key="item._id" to="/post/123"
-            class="relative mb-4 box-border block overflow-hidden rounded-lg no-underline"
-          >
-            <div class="absolute inset-0 bg-[url(@/assets/images/post-cover.jpg)] bg-cover blur-md" />
-            <div class="relative flex-between bg-gray-100/80 p-3.5 dark:(bg-gray-800/70)">
-              <div>
-                <span class="block text-lg text-trueGray-500 dark:(text-trueGray-100)">{{ item.title }}</span>
-                <span class="mt-2 block text-trueGray-400 dark:(text-trueGray-300)">https://www.cyang.com</span>
-              </div>
-              <div class="w-16 overflow-hidden rounded-lg">
-                <img class="h-full w-full object-cover" :src="item.posterUrl" alt="封面">
-              </div>
-            </div>
-          </NuxtLink>
+          <MiniCard v-for="item in hotResult?.result.items" :key="item._id" :item="item" />
         </div>
         <h2
           class="mb-5 mt-0 hidden border-b-1 border-gray-200 border-b-dashed pb-2 text-xl font-normal leading-4 text-gray-500 md:(block) dark:(text-gray-50)"

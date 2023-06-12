@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useDateFormat } from '@vueuse/core'
-import type { PostItem } from '@/types'
+import type { PostItem } from '@/apis/post'
 
 const _props = defineProps<{ item: PostItem }>()
 // console.log(_props.item)

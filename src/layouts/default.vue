@@ -19,10 +19,13 @@ function scrollTo() {
     behavior: 'smooth',
   })
 }
+if (process.client) {
+  document.addEventListener('touchstart', () => {}, false)
+}
 </script>
 
 <template>
-  <div ref="main" class="w-full overflow-hidden dark:(bg-trueGray-900)">
+  <div ref="main" class="w-full dark:(bg-trueGray-900)">
     <NuxtLoadingIndicator />
 
     <!-- <Aplayer /> -->
@@ -31,7 +34,7 @@ function scrollTo() {
     <Aside />
 
     <!-- 移动端 右下角切换 -->
-    <div class="fixed bottom-4 right-10 z-80 transform md:(hidden)">
+    <div class="fixed bottom-8 right-4 z-80 box-border transform border border-transparent md:(hidden)">
       <!-- 主题切换 -->
       <div class="mb-4 h-10 w-10 flex-center select-none rounded bg-gray-50 shadow-md" @click="toggleDark()">
         <NuxtIcon

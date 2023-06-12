@@ -14,6 +14,8 @@ export interface PostItem {
   tags: Array<string>
   title: string
   content: string
+  prev: PostItem | null
+  next: PostItem | null
 }
 enum Api {
   POST = '/post',
@@ -21,12 +23,14 @@ enum Api {
   ALL_TAGS = '/post/tags',
   SEARCH_POST = '/post/search',
   SEARCH_POST_BY_TAG = '/post/searchTag',
+  UPDATE_PV = '/post/updatePv',
 }
-export const getPost = async (option?: HttpOption<PostItem[]>) => {
+export const getPost = async (option: HttpOption<PostItem[]>) => {
   return await useHttp.get(Api.POST, {}, option!)
 }
 
 export const postDetail = async ({ _id }: { _id: string }, option?: HttpOption<PostItem>) => {
+  // console.log('fetchPostdetail1')
   return await useHttp.get(`${Api.POST}/${_id}`, {}, option!)
 }
 
@@ -34,14 +38,18 @@ export const getHotPost = async (option?: HttpOption<PostItem[]>) => {
   return await useHttp.get(Api.HOT_POST, {}, option!)
 }
 
-export const getAllTags = async (option?: HttpOption<string[]>) => {
+export const getAllTags = async (option?: HttpOption<{ tags: [] }>) => {
   return await useHttp.get(Api.ALL_TAGS, {}, option!)
 }
 
-export const searchPost = async (option?: HttpOption<PostItem>) => {
+export const searchPost = async (option?: HttpOption<PostItem[]>) => {
   return await useHttp.get(Api.SEARCH_POST, {}, option!)
 }
 
-export const searchPostByTag = async (option?: HttpOption<PostItem>) => {
+export const searchPostByTag = async (option?: HttpOption<PostItem[]>) => {
   return await useHttp.get(Api.SEARCH_POST_BY_TAG, {}, option!)
+}
+
+export const updatePv = async ({ _id }: { _id: string }, option?: HttpOption<[]>) => {
+  return await useHttp.put(Api.UPDATE_PV, { postId: _id }, option!)
 }
