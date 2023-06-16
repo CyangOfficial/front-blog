@@ -31,6 +31,7 @@ const isSearch = ref(false)
 const inputSearch = ref<HTMLElement | null>()
 const keyword = ref('')
 const searchPost = async () => {
+  if (keyword.value.trim() === '') return
   await navigateTo({
     path: '/search',
     query: {
@@ -68,8 +69,10 @@ const mobileSearch = async () => {
         <NuxtIcon class="text-3xl" name="menu" filled />
       </div>
 
-      <div class="select-none text-xl font-bold text-trueGray-700 md:(hidden) dark:(text-gray-50)">
-        YANG的小站
+      <div class="md:(hidden)">
+        <NuxtLink class="select-none text-xl font-bold text-trueGray-700 no-underline dark:(text-gray-50)" to="/">
+          YANG的小站
+        </NuxtLink>
       </div>
 
       <!-- 网站logo -->
@@ -157,7 +160,6 @@ const mobileSearch = async () => {
 
   <!-- 移动端 搜索层 -->
   <div
-    v-if="$isMobile"
     class="linear fixed left-0 top-13 z-50 w-full transform-gpu bg-white px-4 py-4 transition duration-300 md:(hidden) -translate-y-100 dark:(bg-gray-800)"
     :class="{ 'translate-y-0': isSearch }"
   >

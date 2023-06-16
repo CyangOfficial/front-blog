@@ -3,29 +3,33 @@ interface Page {
   pageSize?: number
   total: number
   currentPage: number
+  hideOnSinglePage?: boolean
 }
 
 const props = withDefaults(defineProps<Page>(), {
   pageSize: 5,
   total: 0,
   currentPage: 1,
+  hideOnSinglePage: false,
 })
 
 const emit = defineEmits<{
   (e: 'currentChange', value: number): void
 }>()
 
-const pageInfo = reactive({
-  // 总页数
-  totalPage: Math.ceil(props.total / props.pageSize),
-  // 一页显示的条目
-  currentPageSize: props.currentPage,
-  // 总数
-  total: props.total,
-})
+// if (!props.hideOnSinglePage) return
+
+// const pageInfo = reactive({
+//   // 总页数
+//   totalPage: Math.ceil(props.total / props.pageSize),
+//   // 一页显示的条目
+//   currentPageSize: props.currentPage,
+//   // 总数
+//   total: props.total,
+// })
 
 // 总页数
-const totalPage = Math.ceil(props.total / props.pageSize)
+const totalPage = computed(() => Math.ceil(props.total / props.pageSize))
 // 当前页
 const curPage = ref(props.currentPage)
 // 一页显示的条目
@@ -48,15 +52,29 @@ const pagePrev = () => {
 
 // 下一页
 const pageNext = () => {
-  if (curPage.value >= pageInfo.totalPage) return
+  if (curPage.value >= totalPage.value) return
   curPage.value++
-  curPage.value = curPage.value > pageInfo.totalPage ? pageInfo.totalPage : curPage.value
+  curPage.value = curPage.value > totalPage.value ? totalPage.value : curPage.value
   emit('currentChange', curPage.value)
 }
+
+watch(() => props.currentPage, (newPage) => {
+  curPage.value = newPage as number
+})
+
+const hidePagination = computed(() => {
+  const isHide = props.hideOnSinglePage
+  if (totalPage.value <= 1) {
+    if (isHide) {
+      return false
+    }
+  }
+  return true
+})
 </script>
 
 <template>
-  <div>
+  <div v-if="hidePagination">
     <ul class="flex list-none justify-start p-0 space-x-2">
       <!-- 上一页 -->
       <li class="group">
