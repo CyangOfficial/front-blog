@@ -16,7 +16,7 @@ interface ToTarget {
 }
 
 const route = useRoute()
-const { postDetail, updatePv } = useApi()
+const { postDetail, updatePv, updateLike } = useApi()
 
 const params = ref(route.params?.id as string)
 // 获取数据
@@ -36,6 +36,39 @@ if (error.value) {
     fatal: true,
   })
 }
+
+// 是否喜欢当前文章
+const isLike = ref(false)
+// 设置喜欢状态
+const setHeartState = async () => {
+  try {
+    // 获取存储在本地的数组id
+    const likeArrayId: Array<string> | undefined = getStorage('likeArrayId', true) && JSON.parse(getStorage('likeArrayId', true))
+
+    // 如果已经点赞return
+    if (likeArrayId && likeArrayId.includes(params.value)) return
+
+    if (detailResult.value) {
+      const { data } = await updateLike({ _id: params.value })
+      if (data.value?.result?.like) {
+        // 更新最新点赞数
+        detailResult.value.result.items.like = data.value.result.like
+        // 没有点过赞 存储新数组
+        if (!likeArrayId) {
+          setStorage('likeArrayId', [params.value], true)
+        // 点赞过 直接push
+        } else {
+          likeArrayId.push(params.value)
+          setStorage('likeArrayId', likeArrayId, true)
+        }
+        isLike.value = true
+      }
+    }
+  } catch (error) {
+    console.log('setHeartState error:', error)
+  }
+}
+
 // MdPreview 组件实例
 const MdPreview = ref<ComponentPublicInstance<MdPreviewFn<ToTarget>> | null>(null)
 
@@ -47,8 +80,8 @@ const curLineIndex = ref('1')
 
 const clickAnchor = ref(false)
 
-// 获取锚点导航
-const getAnchors = () => {
+// 设置锚点导航
+const setAnchors = () => {
   // 找到所有h标签
   const anchors: Array<HTMLElement> = MdPreview.value?.$el.querySelectorAll('h1,h2,h3,h4,h5,h6')
   if (anchors.length === 0) return
@@ -78,7 +111,10 @@ const getAnchors = () => {
     })
 
     // 根据可视区内存在的标题数量 做不同的处理
-    if (visibleEl.length === 0) {
+    if (topEl.length === 0) {
+      curLineIndex.value = anchors[0].getAttribute('data-v-md-line')!
+      console.log('sdfdsfsdfsd')
+    } else if (visibleEl.length === 0) {
       curLineIndex.value = topEl.at(-1)!.getAttribute('data-v-md-line')!
     } else if (visibleEl.length === 1) {
       curLineIndex.value = visibleEl[0].getAttribute('data-v-md-line')!
@@ -134,7 +170,19 @@ const anchorClick = (item: Ititles) => {
   }
 }
 
-onMounted(getAnchors)
+onMounted(() => {
+  try {
+    // 获取点赞状态
+    const likeArrayId: Array<string> | null = getStorage('likeArrayId', true) && JSON.parse(getStorage('likeArrayId', true))
+    if (likeArrayId?.includes(params.value)) {
+      isLike.value = true
+    }
+  } catch (error) {
+    console.log('getStorge error:', error)
+  }
+
+  setAnchors()
+})
 </script>
 
 <template>
@@ -159,6 +207,15 @@ onMounted(getAnchors)
 
     <!-- 详情主体 -->
     <main class="relative mx-auto w-full px-2 container md:(max-w-4xl px-0)">
+      <div class="absolute left-[calc((100%-950px-250px)/2)] top-32 hidden min-h-full md:(block)">
+        <div class="sticky top-42 pr-4 space-y-4">
+          <!-- <div>分享</div> -->
+          <div class="flex cursor-pointer items-center" @click="setHeartState">
+            <NuxtIcon v-if="isLike" name="heart" class="text-3xl" filled />
+            <NuxtIcon v-else name="heart_hollow" class="text-3xl" filled />
+          </div>
+        </div>
+      </div>
       <!-- 详情内容 -->
       <article>
         <v-md-preview ref="MdPreview" class="preview-wrap" :text="postItem?.content" />

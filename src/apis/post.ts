@@ -24,6 +24,7 @@ enum Api {
   SEARCH_POST = '/post/search',
   SEARCH_POST_BY_TAG = '/post/searchTag',
   UPDATE_PV = '/post/updatePv',
+  UPDATE_LIKE = '/post/updateLike',
 }
 export const getPost = async (option: HttpOption<PostItem[]>) => {
   return await useHttp.get(Api.POST, {}, option!)
@@ -52,4 +53,8 @@ export const searchPostByTag = async (option?: HttpOption<PostItem[]>) => {
 
 export const updatePv = async ({ _id }: { _id: string }, option?: HttpOption<[]>) => {
   return await useHttp.put(Api.UPDATE_PV, { postId: _id }, option!)
+}
+
+export const updateLike = async ({ _id }: { _id: string }, option?: HttpOption<PostItem>) => {
+  return await useHttp.put(Api.UPDATE_LIKE, { postId: _id }, option!)
 }

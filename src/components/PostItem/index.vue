@@ -10,7 +10,7 @@ const _props = defineProps<{ item: PostItem }>()
   <section class="mb-6 box-border w-full flex-col overflow-hidden rounded-lg bg-white shadow-post md:(mb-12 h-83 flex flex-row text-right) even:flex-row-reverse dark:bg-dark-post-bg even:text-left dark:shadow-darkPost">
     <!-- 文章封面 -->
     <NuxtLink :to="`/post/${item._id}`" class="group block h-48 overflow-hidden md:(h-full w-[31rem] flex-shrink-0)">
-      <!-- <img class="h-full w-full object-cover transition duration-400 md:(group-hover:scale-106 group-hover:transform)" :src="item.posterUrl" alt="图片"> -->
+      <img class="h-full w-full object-cover transition duration-400 md:(group-hover:scale-106 group-hover:transform)" :src="item.posterUrl" alt="图片">
     </NuxtLink>
 
     <!-- content box -->
@@ -54,7 +54,3 @@ const _props = defineProps<{ item: PostItem }>()
     </div>
   </section>
 </template>
-
-<!-- <style scoped>
-
-</style> -->

@@ -108,9 +108,9 @@ const mobileSearch = async () => {
 
         <!-- PC搜索框 -->
         <form class="relative mr-4 hidden h-11 w-65 border-1 border-gray-700 rounded border-solid md:(flex) dark:(border-gray-50 color-gray-50)" @submit.prevent="searchPost">
-          <button class="absolute left-0 top-0 h-full cursor-pointer border-0 bg-transparent outline-0">
+          <button class="absolute left-1 top-0 h-full cursor-pointer border-0 bg-transparent outline-0">
             <NuxtIcon
-              class="fill-blue-500 align-middle text-2xl text-trueGray-700 dark:(text-gray-50) md:(text-gray-500 dark:text-gray-200)"
+              class="fill-blue-500 align-middle text-xl text-trueGray-700 dark:(text-gray-50) md:(text-gray-500 dark:text-gray-200)"
               name="search" filled
             />
           </button>

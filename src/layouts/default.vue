@@ -25,7 +25,7 @@ if (process.client) {
 </script>
 
 <template>
-  <div ref="main" class="w-full dark:(bg-trueGray-900)">
+  <div ref="main" class="w-full pt-1 dark:(bg-trueGray-900)">
     <NuxtLoadingIndicator />
 
     <!-- <Aplayer /> -->

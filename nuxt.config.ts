@@ -34,6 +34,7 @@ export default defineNuxtConfig({
     // 可以暴露给客户端使用的配置项
     public: {
       baseURL: process.env.NUXT_PUBLIC_BASE_URL,
+      secretKey: process.env.NUXT_SECRET_KEY,
     },
   },
   imports: {
