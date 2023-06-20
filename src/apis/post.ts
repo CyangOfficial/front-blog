@@ -21,6 +21,7 @@ enum Api {
   POST = '/post',
   HOT_POST = '/post/hot',
   ALL_TAGS = '/post/tags',
+  ARCHIVE = '/post/archive',
   SEARCH_POST = '/post/search',
   SEARCH_POST_BY_TAG = '/post/searchTag',
   UPDATE_PV = '/post/updatePv',
@@ -41,6 +42,10 @@ export const getHotPost = async (option?: HttpOption<PostItem[]>) => {
 
 export const getAllTags = async (option?: HttpOption<{ tags: [] }>) => {
   return await useHttp.get(Api.ALL_TAGS, {}, option!)
+}
+
+export const getArchive = async (option?: HttpOption<{ tags: [] }>) => {
+  return await useHttp.get(Api.ARCHIVE, {}, option!)
 }
 
 export const searchPost = async (option?: HttpOption<PostItem[]>) => {

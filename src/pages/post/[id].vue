@@ -213,6 +213,7 @@ onMounted(() => {
           <div class="flex cursor-pointer items-center" @click="setHeartState">
             <NuxtIcon v-if="isLike" name="heart" class="text-3xl" filled />
             <NuxtIcon v-else name="heart_hollow" class="text-3xl" filled />
+            <span class="ml-4">{{ postItem?.like }} Likes</span>
           </div>
         </div>
       </div>
