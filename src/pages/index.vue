@@ -2,6 +2,10 @@
 import release_img1 from '@/assets/images/blog-section-cover.jpg'
 import release_img2 from '@/assets/images/admin-1.jpg'
 import release_img3 from '@/assets/images/coding.jpg'
+import IconNotice from '@/assets/icons/notice.svg'
+import IconHot from '@/assets/icons/hot.svg'
+import IconNew from '@/assets/icons/new.svg'
+import IconLoading from '@/assets/icons/loading.svg'
 
 const newRelease = ref([
   {
@@ -24,21 +28,27 @@ const newRelease = ref([
   },
 ])
 
-const { getPost } = useApi()
+const { getPost, getHomeCover } = useApi()
 
 let postList = ref<any>([])
 const postEnd = ref(false)
 const pending = ref(false)
 const params = reactive({ page: 1, pageSize: 5 })
-const { data } = await getPost({ query: { ...params } })
-postList = data.value?.result.items
+// const { data } = await getPost({ query: { ...params } })
+
+const [{ data: postData }, { data: coverData }] = await Promise.all([
+  getPost({ query: { ...params } }),
+  getHomeCover(),
+])
+postList = postData.value?.data.items
+const coverList = coverData.value?.data || [] as any
 
 const loadMore = async () => {
   pending.value = true
   params.page += 1
   const { data } = await getPost({ query: { ...params } })
   pending.value = false
-  const items = data.value?.result.items as Array<any>
+  const items = data.value?.data.items as Array<any>
   postList.push(...items)
 
   if (items.length < params.pageSize) {
@@ -49,20 +59,20 @@ const loadMore = async () => {
 
 <template>
   <div>
-    <HomeBanner />
+    <HomeBanner v-model:cover-list="coverList" />
     <section class="mx-auto px-3 container xl:max-w-4xl md:(px-0)">
       <!-- notice section -->
       <div
         class="mt-12 w-full border border-gray-600 rounded-lg border-dashed bg-trueGray-50 p-4 text-trueGray-500 dark:(border-gray-500 bg-darkBlue text-gray-50) md:(rounded-xl p-5)"
       >
-        <NuxtIcon name="notice" class="mr-4 align-middle text-2xl leading-4" filled />欢迎来到我的博客~
+        <IconNotice class="mr-4 align-middle text-2xl leading-4" filled />欢迎来到我的博客~
       </div>
 
       <!-- section title -->
       <h2
         class="mb-8 mt-16 hidden border-b-1 border-gray-200 border-b-dashed pb-2 text-xl font-normal leading-4 text-gray-500 md:(block) dark:(text-gray-50)"
       >
-        <NuxtIcon name="hot" class="mr-4 align-middle text-3xl leading-4" filled />New Release!
+        <IconHot class="mr-4 align-middle text-3xl leading-4" filled />New Release!
       </h2>
 
       <!-- New Release! -->
@@ -84,7 +94,7 @@ const loadMore = async () => {
       <h2
         class="mb-6 mt-12 border-b-1 border-gray-200 border-b-dashed pb-2 text-lg font-normal leading-4 text-gray-500 md:(mb-8 mt-16) dark:(text-gray-50)"
       >
-        <NuxtIcon name="new" class="mr-3 align-middle text-2xl leading-4 md:(mr-4 text-3xl)" filled />Latest Posts!
+        <IconNew class="mr-3 align-middle text-2xl leading-4 md:(mr-4 text-3xl)" filled />Latest Posts!
       </h2>
       <div class="mb-6">
         <PostItem v-for="item in postList" :key="item._id" :item="item" />
@@ -99,7 +109,7 @@ const loadMore = async () => {
           <div v-show="postEnd">
             没有更多了~
           </div>
-          <NuxtIcon v-show="pending && !postEnd" name="loading" class="text-5xl" filled />
+          <IconLoading v-show="pending && !postEnd" class="text-5xl" filled />
         </div>
       </div>
     </section>

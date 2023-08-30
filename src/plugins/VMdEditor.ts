@@ -1,22 +1,23 @@
 import VMdPreview from '@kangc/v-md-editor/lib/preview'
 import '@kangc/v-md-editor/lib/style/preview.css'
-import vuepressTheme from '@kangc/v-md-editor/lib/theme/vuepress'
-import '@kangc/v-md-editor/lib/theme/style/vuepress.css'
+import githubTheme from '@kangc/v-md-editor/lib/theme/github.js'
 import '@kangc/v-md-editor/lib/theme/style/github.css'
+// import vuepressTheme from '@kangc/v-md-editor/lib/theme/vuepress'
 
-// highlightjs
-// import hljs from 'highlight.js'
+import hljs from 'highlight.js'
+// import json from 'highlight.js/lib/languages/json'
+// import javascript from 'highlight.js/lib/languages/javascript'
 
-// Prism
-import Prism from 'prismjs'
-// 直接按需引入 prism 的语言包即可，此处以 json 为例
-import 'prismjs/components/prism-json'
+// hljs.registerLanguage('json', json)
+// hljs.registerLanguage('js', javascript)
 
-VMdPreview.use(vuepressTheme, {
-  Prism,
+VMdPreview.use(githubTheme, {
+
+  Hljs: hljs,
+  // Prism,
 })
 
 export default defineNuxtPlugin((nuxtApp) => {
-  nuxtApp.vueApp.use(VMdPreview)
+  // nuxtApp.vueApp.use(VMdPreview)
   nuxtApp.vueApp.component('VMdPreview', VMdPreview)
 })

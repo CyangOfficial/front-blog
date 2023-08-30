@@ -1,19 +1,27 @@
 <script setup lang="ts">
 import { useDark, useToggle } from '@vueuse/core'
+import IconHouse from '@/assets/icons/house.svg'
+import IconPost from '@/assets/icons/post.svg'
+import IconArchive from '@/assets/icons/archive.svg'
+import IconPerson from '@/assets/icons/person.svg'
+import IconMoon from '@/assets/icons/moon.svg'
+import IconSun from '@/assets/icons/sun.svg'
+import IconMenu from '@/assets/icons/menu.svg'
+import IconSearch from '@/assets/icons/search.svg'
+import IconTag1 from '@/assets/icons/tag1.svg'
 
-const { $isMobile } = useNuxtApp()
+const { $isMobile, $isDesktop } = useNuxtApp()
 const { getAllTags } = useApi()
 
 // import { useMainStore } from '@/stores'
 // import NuxtIcons from 'nuxt-icons'
-// import House from '@/assets/svg/house.svg'
+
 // const { y } = useWindowScroll()
 
 const tags = ref([])
 if ($isMobile) {
-  console.log('获取标签')
   const { data } = await getAllTags()
-  tags.value = data.value?.result.tags
+  tags.value = data.value?.data.tags
 }
 
 const mainStore = useMainStore()
@@ -24,6 +32,8 @@ function open() {
 // 暗黑主题切换
 const isDark = useDark()
 const toggleDark = useToggle(isDark)
+
+console.log('isDark', isDark.value)
 
 const isSearch = ref(false)
 
@@ -66,7 +76,7 @@ const mobileSearch = async () => {
     <nav class="h-13 flex items-center justify-between md:(h-18)">
       <!-- mobile 菜单按钮 -->
       <div class="text-trueGray-700 md:(hidden) dark:(text-gray-50)" @click="open">
-        <NuxtIcon class="text-3xl" name="menu" filled />
+        <IconMenu class="text-3xl" filled />
       </div>
 
       <div class="md:(hidden)">
@@ -85,33 +95,32 @@ const mobileSearch = async () => {
       <div class="h-full flex items-center">
         <div class="mr-8 hidden h-full whitespace-nowrap md:(flex items-center) space-x-10">
           <NuxtLink to="/" class="group nav-link">
-            <NuxtIcon class="svg-style" name="house" filled />首页
+            <!-- <NuxtIcon class="svg-style" name="house" filled />首页 -->
+            <IconHouse class="svg-style" />首页
           </NuxtLink>
           <NuxtLink to="/post" class="group nav-link">
-            <NuxtIcon class="svg-style" name="post" filled />文章
+            <IconPost class="svg-style" />文章
           </NuxtLink>
           <NuxtLink to="/archive" class="group nav-link">
-            <NuxtIcon class="svg-style" name="archive" filled />归档
+            <IconArchive class="svg-style" />归档
           </NuxtLink>
           <NuxtLink to="/" class="group nav-link">
-            <NuxtIcon class="svg-style" name="person" filled />关于
+            <IconPerson class="svg-style" />关于
           </NuxtLink>
         </div>
 
         <!-- 移动端搜索按钮 -->
         <button type="button" class="cursor-pointer border-transparent bg-transparent md:(hidden)" @click="mobileSearch">
-          <NuxtIcon
+          <IconSearch
             class="mr-1.5 inline-block fill-blue-500 align-middle text-3xl text-trueGray-700 dark:(text-gray-50) md:(text-gray-500 dark:text-gray-200)"
-            name="search" filled
           />
         </button>
 
         <!-- PC搜索框 -->
-        <form class="relative mr-4 hidden h-11 w-65 border-1 border-gray-700 rounded border-solid md:(flex) dark:(border-gray-50 color-gray-50)" @submit.prevent="searchPost">
+        <form v-if="$isDesktop" class="relative mr-4 hidden h-11 w-65 border-1 border-gray-700 rounded border-solid md:(flex) dark:(border-gray-50 color-gray-50)" @submit.prevent="searchPost">
           <button class="absolute left-1 top-0 h-full cursor-pointer border-0 bg-transparent outline-0">
-            <NuxtIcon
+            <IconSearch
               class="fill-blue-500 align-middle text-xl text-trueGray-700 dark:(text-gray-50) md:(text-gray-500 dark:text-gray-200)"
-              name="search" filled
             />
           </button>
           <input
@@ -133,26 +142,27 @@ const mobileSearch = async () => {
           />
         </button> -->
 
-        <!-- 主题切换按钮 -->
+        <!-- PC主题切换按钮 -->
         <button
+          v-if="$isDesktop"
           type="button"
           border="box 2 white solid dark:dark-header-btn"
           bg="gradient-to-b dark:sky"
           class="hidden h-12 w-30 cursor-pointer items-center overflow-hidden rounded-3xl from-sky-800 to-sky-400 px-2 theme-animation md:(flex flex-between) dark:(from-sky-1000 to-sky-950)"
           @click="toggleDark()"
         >
-          <ClientOnly fallback-tag="div" fallback="loading svg">
-            <NuxtIcon
-              :class="{ 'transform-gpu translate-y-0': !isDark, 'transform-gpu translate-y--50': isDark }"
-              class="mr-1.5 inline-block fill-blue-500 align-middle text-2xl text-gray-500 theme-animation md:(text-3xl)"
-              name="sun" filled
-            />
-            <NuxtIcon
-              :class="{ 'transform-gpu translate-y-0': isDark, 'transform-gpu translate-y--50': !isDark }"
-              class="inline-block fill-blue-500 align-middle text-2xl text-gray-500 theme-animation md:(text-3xl)"
-              name="moon" filled
-            />
-          </ClientOnly>
+          <!-- <ClientOnly fallback-tag="div" fallback="loading svg"> -->
+          <IconSun
+            :class="{ 'transform-gpu translate-y-0': !isDark, 'transform-gpu translate-y--50': isDark }"
+            class="mr-1.5 inline-block fill-blue-500 align-middle text-2xl text-gray-500 theme-animation md:(text-3xl)"
+            filled
+          />
+          <IconMoon
+            :class="{ 'transform-gpu translate-y-0': isDark, 'transform-gpu translate-y--50': !isDark }"
+            class="inline-block fill-blue-500 align-middle text-2xl text-gray-500 theme-animation md:(text-3xl)"
+            filled
+          />
+          <!-- </ClientOnly> -->
         </button>
       </div>
     </nav>
@@ -160,6 +170,7 @@ const mobileSearch = async () => {
 
   <!-- 移动端 搜索层 -->
   <div
+    v-if="$isMobile"
     class="linear fixed left-0 top-13 z-50 w-full transform-gpu bg-white px-4 py-4 transition duration-300 md:(hidden) -translate-y-100 dark:(bg-gray-800)"
     :class="{ 'translate-y-0': isSearch }"
   >
@@ -184,7 +195,7 @@ const mobileSearch = async () => {
     <h2
       class="mb-2 mt-4 border-b-1 border-gray-200 border-b-dashed pb-1 text-base font-normal leading-4 text-gray-500 md:(block) dark:(text-gray-50)"
     >
-      <NuxtIcon name="tag1" class="mr-2 align-middle text-xl leading-4" filled />标签搜索
+      <IconTag1 class="mr-2 align-middle text-xl leading-4" filled />标签搜索
     </h2>
     <!-- <ClientOnly> -->
     <div class="flex flex-wrap">

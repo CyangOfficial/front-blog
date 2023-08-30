@@ -5,6 +5,7 @@ interface Banner {
 }
 const props = defineProps<Banner>()
 function getImg() {
+  // console.log('url', import.meta.url, window.location.href)
   return new URL(`../../assets/images/${props.imgName}`, import.meta.url).href
 }
 </script>

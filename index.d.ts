@@ -14,3 +14,6 @@ declare module '@kangc/v-md-editor/lib/theme/vuepress.js';
 declare module '@kangc/v-md-editor/*';
 declare module 'prismjs';
 declare module 'APlayer';
+declare module 'markdown-it-emoji';
+declare module 'markdown-it-class';
+declare module 'markdown-it-task-lists';

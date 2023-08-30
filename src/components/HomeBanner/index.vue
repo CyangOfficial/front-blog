@@ -1,4 +1,11 @@
-<script setup>
+<script setup lang="ts">
+import type { ICover } from '@/apis/app'
+import IconGithub from '@/assets/icons/github.svg'
+import IconWechat from '@/assets/icons/wechat.svg'
+
+const props = defineProps<{ coverList: ICover[] }>()
+const cover = props.coverList[0]
+// console.log('listsfsd', props.coverList)
 const title = ref('Hi, Cyang!')
 const subTitle = ref('一沙一世界，一花一天堂。君掌盛无边，刹那成永恒。')
 const bannerTitle = computed(() => {
@@ -7,10 +14,15 @@ const bannerTitle = computed(() => {
 </script>
 
 <template>
+  <!-- bg-[url(@/assets/images/dot.gif)] -->
+  <!-- after:(absolute z-30 h-18 w-[150%] rounded-[100%] bg-white content-[''] -bottom-12 -left-1/4 dark:bg-trueGray-900) -->
   <div
-    class="before:r-0 before:t-0 relative w-full overflow-hidden after:(absolute z-30 h-18 w-[150%] rounded-[100%] bg-white content-[''] -bottom-12 -left-1/4 dark:bg-trueGray-900) before:(absolute inset-0 z-20 bg-[url(@/assets/images/dot.gif)] bg-fixed bg-left-top bg-repeat content-['']) md:(after:hidden)"
+    class="before:r-0 before:t-0 relative w-full overflow-hidden before:(absolute inset-0 z-20 bg-fixed bg-left-top bg-repeat content-['']) md:(after:hidden)"
   >
-    <figure class="m-0 h-[46vh] flex-center bg-[url(@/assets/images/AiLun.png)] bg-cover bg-fixed bg-center md:(h-screen)">
+    <figure
+      class="m-0 h-[50vh] flex-center bg-cover bg-fixed bg-center md:(h-screen)"
+      :style="{ 'background-image': `url(${cover?.coverUrl})` }"
+    >
       <section class="relative z-20 text-white">
         <h1
           class="font-pseudo relative select-none text-center text-3xl font-bold uppercase mix-blend-lighten md:(text-[5rem])"
@@ -24,10 +36,10 @@ const bannerTitle = computed(() => {
           </p>
           <div class="my-2 hidden md:(flex-center)">
             <a href="https://github.com/CyangOfficial" class="mr-2 text-3xl text-indigo-600" target="_blank">
-              <NuxtIcon name="github" filled />
+              <IconGithub filled />
             </a>
             <a href="#" class="mr-2 text-3xl text-green-500">
-              <NuxtIcon name="wechat" filled />
+              <IconWechat filled />
             </a>
           </div>
         </div>

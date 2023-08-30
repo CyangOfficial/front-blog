@@ -1,17 +1,21 @@
 // import { Message } from '@arco-design/web-vue'
-// import type { FetchOptions } from 'ofetch'
+// import { useToast } from 'vue-toast-notification'
+// import * as Toast from 'vue-toastification'
+import type { FetchResponse } from 'ofetch'
 import type { Ref } from 'vue'
+// import * as Toast from 'vue-toast-notification'
+// import 'vue-toast-notification/dist/theme-bootstrap.css'
 import type { UseFetchOptions } from '#app'
-// import { useUserStore } from '~/stores/user.store'
-// import IconEmoticonDead from '~icons/mdi/emoticon-dead'
 
+// const { useToast } = Toast
+// const toast = useToast()
 export interface ResData<T> {
   items: T
   [x: string]: any
 }
 
 export interface ResOptions<T> {
-  result: T
+  data: T
   code: number
   message: string
 }
@@ -19,32 +23,23 @@ export interface ResOptions<T> {
 type UrlType = string | Request | Ref<string | Request> | (() => string | Request)
 
 export type HttpOption<T> = UseFetchOptions<ResOptions<ResData<T>>>
-
-// const handleError = <T>(response: FetchResponse<ResOptions<T>> & FetchResponse<ResponseType>) => {
-//   const err = (text: string) => {
-//     // Message.error({
-//     //   content: response?._data?.message ?? text,
-//     //   icon: () => h(IconEmoticonDead),
-//     // })
-//   }
-//   if (!response._data) {
-//     err('请求超时，服务器无响应！')
-//     return
-//   }
-//   // const userStore = useUserStore()
-//   const handleMap: { [key: number]: () => void } = {
-//     404: () => err('服务器资源不存在'),
-//     500: () => err('服务器内部错误'),
-//     403: () => err('没有权限访问该资源'),
-//     401: () => {
-//       err('登录状态已过期，需要重新登录')
-//       // userStore.clearUserInfo()
-//       // TODO 跳转实际登录页
-//       navigateTo('/')
-//     },
-//   }
-//   handleMap[response.status] ? handleMap[response.status]() : err('未知错误！')
-// }
+const handleError = <T>(response: FetchResponse<ResOptions<T>> & FetchResponse<ResponseType>) => {
+  const err = (text: string) => {
+    // toast.error(text ?? response?._data?.message)
+  }
+  if (!response._data) {
+    err('请求超时，服务器无响应！')
+    return
+  }
+  // const userStore = useUserStore()
+  const handleMap: { [key: number]: () => void } = {
+    404: () => err('服务器资源不存在'),
+    500: () => err('服务器内部错误'),
+    403: () => err('没有权限访问该资源'),
+    429: () => err('请求过于频繁'),
+  }
+  handleMap[response.status] ? handleMap[response.status]() : err('未知错误！')
+}
 // get方法传递数组形式参数
 // const paramsSerializer = (params?: SearchParameters) => {
 //   if (!params)
@@ -59,6 +54,7 @@ export type HttpOption<T> = UseFetchOptions<ResOptions<ResData<T>>>
 //   })
 //   return query
 // }
+// const errorTotal = 0
 const fetch = <T>(url: UrlType, option: UseFetchOptions<ResOptions<ResData<T>>>) => {
   const { public: { baseURL } } = useRuntimeConfig()
   return useFetch(url, {
@@ -75,33 +71,21 @@ const fetch = <T>(url: UrlType, option: UseFetchOptions<ResOptions<ResData<T>>>)
       // options.headers = new Headers(options.headers)
       // options.headers.set('Authorization', `Bearer ${userStore.getToken}`)
     },
+    onRequestError() {
+      // process.client && toast.error('请求出错!')
+    },
     // 响应拦截
     onResponse({ response }) {
-      // if (response.status === 0)
-      //   return response
       const resData = response._data
-      if (response._data.code !== 0) {
-        // console.log(process.server)
-        // console.log('错误错误错误错误错误', resData)
-        // showError({ statusCode: 404, statusMessage: 'Page Not Found' })
-        // handleError<T>(response)
-        // showError({ statusCode: 404, statusMessage: 'Page Not Found' })
-        // throw createError({ statusCode: 404, statusMessage: 'Page Not Found' })
-        // throw createError({
-        //   statusCode: resData.statusCode,
-        //   // statusMessage: baseURL + url,
-        //   message: resData.message || '服务器内部错误',
-        //   fatal: true,
-        // })
-        // return Promise.reject(resData)
-      }
       // 成功返回
       return resData
     },
     // 错误处理
     onResponseError({ response }) {
-      // handleError<T>(response)
-      // console.log('error response', response)
+      // console.log('onResponseError', { response })
+      const resData = response._data
+      process.client && handleError<T>(response)
+      Promise.reject(resData)
     },
     // 合并参数
     ...option,

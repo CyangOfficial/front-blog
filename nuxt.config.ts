@@ -1,6 +1,10 @@
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
+
 export default defineNuxtConfig({
   ssr: true,
+  // experimental: {
+  //   headNext: true
+  // },
   srcDir: 'src/',
   app: {
     // layoutTransition: { name: 'layout', mode: 'out-in' },
@@ -35,6 +39,8 @@ export default defineNuxtConfig({
     public: {
       baseURL: process.env.NUXT_PUBLIC_BASE_URL,
       secretKey: process.env.NUXT_SECRET_KEY,
+      host: process.env.NUXT_HOST,
+      port: process.env.NUXT_PORT,
     },
   },
   imports: {
@@ -48,11 +54,16 @@ export default defineNuxtConfig({
   //       },
   //     },
   //   },
+  // plugins: [
+  //   ViteSvgLoader({
+  //     defaultImport: 'component',
+  //   }),
+  // ],
   // },
   modules: [
-    // 'nuxt-svgo',
-    'nuxt-icons',
-    // 'nuxt-svg-icons',
+    // 'nuxt-icons',
+    'nuxt-svgo',
+    // '@nuxthq/ui',
     '@unocss/nuxt',
     ['@pinia/nuxt',
       {
@@ -60,5 +71,16 @@ export default defineNuxtConfig({
       },
     ],
     '@vueuse/nuxt',
+    // ['@tailvue/nuxt', { toast: true }],
   ],
+  // toast: {
+  //   position: 'top-center',
+  // },
+  svgo: {
+    autoImportPath: false,
+    global: false,
+    // defaultImport: 'componentext',
+    // autoImportPath: './assets/icons/',
+
+  },
 })

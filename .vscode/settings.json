@@ -4,10 +4,12 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
   },
+  "scss.lint.unknownAtRules": "ignore",
   "stylelint.enable": true,
   "stylelint.validate": [
     "css",
     "vue",
     "html"
-  ]
+  ],
+  "typescript.tsdk": "node_modules\\typescript\\lib"
 }

@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import IconEmptyBox from '@/assets/icons/empty_box.svg'
+import IconHot from '@/assets/icons/hot.svg'
+import IconTag1 from '@/assets/icons/tag1.svg'
+
 const route = useRoute()
 const { searchPost, getAllTags, getHotPost, searchPostByTag } = useApi()
 
@@ -70,7 +74,7 @@ onBeforeUnmount(() => {
       <!-- 搜索状态 -->
       <div v-show="!pending && route.query?.keyword" class="mb-8 text-center text-2xl text-gray-800 dark:(text-gray-50)">
         找到关于<span class="text-amber-500">&nbsp;{{ searchParams.keyword }}&nbsp;</span>的<span class="text-amber-500">&nbsp;{{
-          postResult?.result.total }}&nbsp;</span>条记录
+          postResult?.data.total }}&nbsp;</span>条记录
       </div>
       <div v-show="!tagPending && route.query?.tag" class="mb-8 text-center text-2xl text-gray-800 dark:(text-gray-50)">
         当前标签：<span class="text-amber-500">{{ tagParams.tag }}</span>
@@ -80,13 +84,13 @@ onBeforeUnmount(() => {
       </div>
 
       <!-- 文章列表/骨架屏 -->
-      <PostItem v-for="item in dataResult?.value?.result.items" v-show="!pending && !tagPending" :key="item._id" :item="item" />
+      <PostItem v-for="item in dataResult?.value?.data.items" v-show="!pending && !tagPending" :key="item._id" :item="item" />
       <ProfilePostItem v-for="item in 2" v-show="pending || tagPending" :key="item" />
 
       <!-- 无法数据提示icon -->
-      <div v-show="(postResult?.result.total === 0 && !pending && route.query?.keyword) || (tagResult?.result.total === 0 && !tagPending && route.query?.tag)" class="mt-2/6 h-full text-center md:(mt-40)">
-        <NuxtIcon
-          name="empty_box" class="mr-2 block align-middle text-9xl leading-4 text-gray-500 dark:(text-gray-50)"
+      <div v-show="(postResult?.data.total === 0 && !pending && route.query?.keyword) || (tagResult?.data.total === 0 && !tagPending && route.query?.tag)" class="mt-2/6 h-full text-center md:(mt-40)">
+        <IconEmptyBox
+          class="mr-2 block align-middle text-9xl leading-4 text-gray-500 dark:(text-gray-50)"
           filled
         />
         <span class="text-xl text-gray-500 dark:(text-gray-50)">{{ route.query?.keyword ? '未找到相关文章...' : '未找到相关标签...' }}</span>
@@ -95,9 +99,9 @@ onBeforeUnmount(() => {
       <!-- 分页 -->
       <!-- v-show="(postResult?.result.total > 0 && !pending) || (tagResult?.result.total > 0 && !tagPending)" -->
       <Pagination
-        v-show="(postResult?.result.total > 0 && !pending) || (tagResult?.result.total > 0 && !tagPending)"
+        v-show="(postResult?.data.total > 0 && !pending) || (tagResult?.data.total > 0 && !tagPending)"
         :hide-on-single-page="true"
-        :total="dataResult?.value?.result.total" :current-page="pagination?.page" :page-size="pagination?.pageSize"
+        :total="dataResult?.value?.data.total" :current-page="pagination?.page" :page-size="pagination?.pageSize"
         @current-change="changePage"
       />
     </div>
@@ -107,17 +111,17 @@ onBeforeUnmount(() => {
       <h2
         class="mb-8 mt-0 hidden border-b-1 border-gray-200 border-b-dashed pb-2 text-xl font-normal leading-4 text-gray-500 md:(block) dark:(text-gray-50)"
       >
-        <NuxtIcon name="hot" class="mr-2 align-middle text-2xl leading-4" filled />热门文章
+        <IconHot class="mr-2 align-middle text-2xl leading-4" filled />热门文章
       </h2>
-      <MiniCard v-for="item in hotResult?.result.items" :key="item._id" :item="item" />
+      <MiniCard v-for="item in hotResult?.data.items" :key="item._id" :item="item" />
       <h2
         class="mb-5 mt-0 hidden border-b-1 border-gray-200 border-b-dashed pb-2 text-xl font-normal leading-4 text-gray-500 md:(block) dark:(text-gray-50)"
       >
-        <NuxtIcon name="tag1" class="mr-4 align-middle text-3xl leading-4" filled />标签云
+        <IconTag1 class="mr-4 align-middle text-3xl leading-4" filled />标签云
       </h2>
       <div class="flex flex-wrap">
         <NuxtLink
-          v-for="item in tagsResult?.result.tags" :key="item" :to="`/search?tag=${item}`"
+          v-for="item in tagsResult?.data.tags" :key="item" :to="`/search?tag=${item}`"
           class="mb-2.5 mr-2.5 block select-none rounded bg-emerald-600/10 px-1.5 text-sm leading-6 color-emerald-600 no-underline hover:(bg-emerald-600/20)"
         >
           {{ item }}

@@ -6,6 +6,13 @@ import transformerVariantGroup from '@unocss/transformer-variant-group'
 import transformerDirectives from '@unocss/transformer-directives'
 
 export default defineConfig({
+  // extract: {
+  //   pipeline: {
+  //     include: [
+  //       'node_modules/tailvue/dist/tailvue.es.js',
+  //     ],
+  //   },
+  // },
   rules: [
     // [/^bg-\[url\(*\)\]$/, match => ({ background: `url(${match[1]})` })],
     // ['m-1', { margin: '0.25rem' }],
@@ -96,7 +103,9 @@ export default defineConfig({
     presetAttributify(),
   ],
   transformers: [
-    transformerDirectives(),
+    transformerDirectives({
+      applyVariable: ['--at-apply', '--uno-apply', '--uno'],
+    }),
     transformerVariantGroup(),
   ],
 })

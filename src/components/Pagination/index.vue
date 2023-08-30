@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import IconArrow from '@/assets/icons/arrow.svg'
+
 interface Page {
   pageSize?: number
   total: number
@@ -87,7 +89,7 @@ const hidePagination = computed(() => {
           }"
           @click="pagePrev"
         >
-          <NuxtIcon name="arrow" :class="{ 'text-zinc-300 dark:(text-gray-500)': curPage === 1, 'cursor-pointer': curPage > 1 }" />
+          <IconArrow name="arrow" :class="{ 'text-zinc-300 dark:(text-gray-500)': curPage === 1, 'cursor-pointer': curPage > 1 }" />
         </button>
       </li>
 
@@ -114,7 +116,7 @@ const hidePagination = computed(() => {
           }"
           @click="pageNext"
         >
-          <NuxtIcon name="arrow" class="" :class="{ 'text-zinc-300 dark:(text-gray-500)': curPage === totalPage, 'cursor-pointer': curPage < totalPage }" />
+          <IconArrow :class="{ 'text-zinc-300 dark:(text-gray-500)': curPage === totalPage, 'cursor-pointer': curPage < totalPage }" />
         </button>
       </li>
     </ul>

@@ -1,7 +1,11 @@
 <script setup lang="ts">
 const { getArchive } = useApi()
 const { data } = await getArchive()
-const archiveList = data.value?.result
+const archiveList = data.value?.data
+
+const addZero = (num: number) => {
+  return num < 10 ? `0${num}` : num
+}
 </script>
 
 <template>
@@ -15,12 +19,16 @@ const archiveList = data.value?.result
         <ul class="relative list-none p-0 pb-0.5 after:(absolute left-34.5 top-0 h-full w-1 bg-sky-300 content-[''])">
           <li v-for="month in year.months" :key="month.month" class="">
             <div class="month-title">
-              {{ month.month < 10 ? `0${month.month}` : month.month }}月({{ month.days.length }}篇文章)
+              {{ addZero(month.month) }}月({{ month.days.length }}篇文章)
             </div>
             <ul class="relative mt-2 list-none pl-39">
               <li v-for="day in month.days" :key="day._id" class="day-title">
                 <NuxtLink :to="`/post/${day._id}`" class="text-trueGray-600 no-underline dark:(text-gray-100) hover:(text-amber-400)">
-                  <span class="mr-1 font-bold color-sky-300">{{ day.day < 10 ? `0${day.day}` : day.day }}日</span>{{ day.title }}
+                  <span class="mr-1 font-bold color-sky-300">{{ addZero(day.day) }}日</span>
+                  <span>{{ day.title }}&nbsp;&nbsp;</span>
+                  <span>
+                    ({{ day.pv }}&nbsp;<NuxtIcon name="eye" filled />)
+                  </span>
                 </NuxtLink>
               </li>
             </ul>

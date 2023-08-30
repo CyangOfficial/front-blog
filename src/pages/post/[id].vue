@@ -1,5 +1,14 @@
 <script setup lang="ts">
 import { useDateFormat } from '@vueuse/core'
+import IconHeart from '@/assets/icons/heart.svg'
+import IconHeartHollow from '@/assets/icons/heart_hollow.svg'
+
+// import '@toast-ui/editor/dist/toastui-editor.css'
+// import '@toast-ui/editor/dist/i18n/zh-cn'
+// import 'prismjs/themes/prism.css'
+// import '@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight.css'
+
+const { $toast, $mdit } = useNuxtApp()
 
 interface Ititles {
   title: string
@@ -16,20 +25,22 @@ interface ToTarget {
 }
 
 const route = useRoute()
-const { postDetail, updatePv, updateLike } = useApi()
+const { postDetail, updateLike } = useApi()
 
 const params = ref(route.params?.id as string)
 // 获取数据
 const [{ data: detailResult, error }] = await Promise.all([
-  postDetail({ _id: params.value }),
-  updatePv({ _id: params.value }),
+  postDetail({ _id: params.value }, { key: `post-${params.value}` }),
 ])
-
-const postItem = ref(detailResult.value?.result.items)
+const postItem = ref(detailResult.value?.data.items)
 
 // 错误处理
 if (error.value) {
   const errData = error.value.data
+  process.client && $toast({
+    type: 'error',
+    text: errData.message,
+  })
   throw createError({
     statusCode: errData.statusCode,
     message: errData.message || '服务器内部错误',
@@ -50,13 +61,13 @@ const setHeartState = async () => {
 
     if (detailResult.value) {
       const { data } = await updateLike({ _id: params.value })
-      if (data.value?.result?.like) {
-        // 更新最新点赞数
-        detailResult.value.result.items.like = data.value.result.like
+      if (data.value?.data?.like) {
+        // 更新点赞数
+        detailResult.value.data.items.like = data.value.data.like
         // 没有点过赞 存储新数组
         if (!likeArrayId) {
           setStorage('likeArrayId', [params.value], true)
-        // 点赞过 直接push
+          // 点赞过 直接push
         } else {
           likeArrayId.push(params.value)
           setStorage('likeArrayId', likeArrayId, true)
@@ -82,9 +93,10 @@ const clickAnchor = ref(false)
 
 // 设置锚点导航
 const setAnchors = () => {
+  console.log('MdPreview', MdPreview.value)
   // 找到所有h标签
   const anchors: Array<HTMLElement> = MdPreview.value?.$el.querySelectorAll('h1,h2,h3,h4,h5,h6')
-  if (anchors.length === 0) return
+  if (!anchors || anchors.length === 0) return
   curLineIndex.value = anchors[0].getAttribute('data-v-md-line')!
 
   // 监听scroll 文章标题和标题导航联动
@@ -113,7 +125,6 @@ const setAnchors = () => {
     // 根据可视区内存在的标题数量 做不同的处理
     if (topEl.length === 0) {
       curLineIndex.value = anchors[0].getAttribute('data-v-md-line')!
-      console.log('sdfdsfsdfsd')
     } else if (visibleEl.length === 0) {
       curLineIndex.value = topEl.at(-1)!.getAttribute('data-v-md-line')!
     } else if (visibleEl.length === 1) {
@@ -128,7 +139,6 @@ const setAnchors = () => {
 
   // 在组件卸载之前移除scroll监听
   onBeforeUnmount(() => {
-    // console.log('onBeforeUnmount')
     window.removeEventListener('scroll', activeAnchor)
   })
 
@@ -181,24 +191,29 @@ onMounted(() => {
     console.log('getStorge error:', error)
   }
 
-  setAnchors()
+  setTimeout(() => {
+    setAnchors()
+  }, 0)
 })
 </script>
 
 <template>
-  <div class="min-h-full">
+  <div class="min-h-screen">
     <!-- 详情banner -->
     <div
       class="relative h-72 overflow-hidden bg-cover bg-no-repeat before:(absolute inset-0 bg-black/10 content-[''] dark:bg-black/30) md:(h-114)"
       :style="{ 'background-image': `url(${postItem?.posterUrl})` }"
     >
-      <div class="[text-shadow:_2px_2px_10px_#000000] absolute bottom-4 mx-auto mt-42 px-4 text-gray-100 md:(relative mt-82 max-w-4xl)">
+      <div
+        class="[text-shadow:_2px_2px_10px_#000000] absolute bottom-4 mx-auto mt-42 px-4 text-gray-100 md:(relative mt-82 max-w-4xl)"
+      >
         <h2 class="text-2xl md:(text-4xl)">
           {{ postItem?.title }}
         </h2>
         <div class="text-sm md:(text-base)">
           <img class="mr-4 h-10 w-10 rounded-full align-middle" src="@/assets/images/avatar.jpg" alt="头像">
-          <span class="mr-4 align-middle">楊 · {{ useDateFormat(postItem?.createdAt, 'YYYY-MM-DD') }}</span>
+          <span class="mr-4 align-middle">楊 · {{ postItem?.createdAt && useDateFormat(postItem?.createdAt, 'YYYY-MM-DD')
+          }}</span>
           <span class="mr-4 align-middle">{{ postItem?.pv }}人阅读</span>
           <span class="mr-4 align-middle">{{ postItem?.like }}人喜欢</span>
         </div>
@@ -211,23 +226,36 @@ onMounted(() => {
         <div class="sticky top-42 pr-4 space-y-4">
           <!-- <div>分享</div> -->
           <div class="flex cursor-pointer items-center" @click="setHeartState">
-            <NuxtIcon v-if="isLike" name="heart" class="text-3xl" filled />
-            <NuxtIcon v-else name="heart_hollow" class="text-3xl" filled />
-            <span class="ml-4">{{ postItem?.like }} Likes</span>
+            <!-- <NuxtIcon v-if="isLike" name="heart" class="text-3xl dark:(text-gray-50)" filled />
+            <NuxtIcon v-else name="heart_hollow" class="text-3xl dark:(text-gray-50)" filled /> -->
+            <IconHeart v-if="isLike" filled class="text-3xl dark:(text-gray-50)" />
+            <IconHeartHollow v-else name="heart_hollow" filled class="text-3xl dark:(text-gray-50)" />
+            <span class="ml-4 dark:(color-gray-50)">{{ postItem?.like }} Likes</span>
           </div>
         </div>
       </div>
       <!-- 详情内容 -->
-      <article>
-        <v-md-preview ref="MdPreview" class="preview-wrap" :text="postItem?.content" />
+      <article class="pt-8">
+        <!-- <ClientOnly> -->
+        <!-- <VMdPreview v-show="false" ref="MdPreview" class="preview-wrap" :text="postItem?.content" /> -->
+        <!-- <v-md-preview v-if="postItem?.content" ref="MdPreview" class="preview-wrap" :text="postItem?.content" /> -->
+        <!-- </ClientOnly> -->
+        <div id="content" v-html="$mdit.render(postItem?.content as string)" />
       </article>
+
+      <div class="mb-4 mt-2 flex cursor-pointer items-center justify-center md:(hidden)" @click="setHeartState">
+        <IconHeart v-if="isLike" class="text-3xl" filled />
+        <IconHeartHollow v-else class="text-3xl" filled />
+        <span class="ml-2 text-sm">点个赞吧</span>
+      </div>
 
       <!-- 文章标题导航 -->
       <aside class="absolute right-[calc((100%-950px-550px)/2)] top-4 hidden min-h-full md:(block)">
-        <ol class="sticky top-24 list-none pl-4 before:(absolute left-0 inline-block h-full w-[2px] bg-gray-100 content-['']) before:dark:(bg-gray-700)">
+        <ol
+          class="sticky top-24 list-none pl-4 before:(absolute left-0 inline-block h-full w-[2px] bg-gray-100 content-['']) before:dark:(bg-gray-700)"
+        >
           <li
-            v-for="(item) in titleNavs" :key="item.lineIndex"
-            :style="{ padding: `0 0 0 ${item.indent * 10}px` }"
+            v-for="(item) in titleNavs" :key="item.lineIndex" :style="{ padding: `0 0 0 ${item.indent * 10}px` }"
             @click="anchorClick(item)"
           >
             <a
@@ -241,8 +269,8 @@ onMounted(() => {
       <!-- 上下篇推荐 -->
       <div class="md:(flex)">
         <NuxtLink
-          v-if="postItem?.prev"
-          :to="`/post/${postItem.prev._id}`" class="group relative block flex-1 bg-cover py-8 pl-10 text-white no-underline md:(py-12)"
+          v-if="postItem?.prev" :to="`/post/${postItem.prev._id}`"
+          class="group relative block flex-1 bg-cover py-8 pl-10 text-white no-underline md:(py-12)"
           :style="{ 'background-image': `url(${postItem.prev.posterUrl})` }"
         >
           <div class="absolute inset-0 bg-black opacity-40 transition-all group-hover:(opacity-10)" />
@@ -255,8 +283,8 @@ onMounted(() => {
         </NuxtLink>
 
         <NuxtLink
-          v-if="postItem?.next"
-          :to="`/post/${postItem.next._id}`" class="group relative block flex-1 bg-cover py-8 pr-10 text-right text-white no-underline md:(py-12)"
+          v-if="postItem?.next" :to="`/post/${postItem.next._id}`"
+          class="group relative block flex-1 bg-cover py-8 pr-10 text-right text-white no-underline md:(py-12)"
           :style="{ 'background-image': `url(${postItem.next.posterUrl})` }"
         >
           <div class="absolute inset-0 bg-black opacity-40 transition-all group-hover:(opacity-10)" />
@@ -272,12 +300,106 @@ onMounted(() => {
   </div>
 </template>
 
-<style>
-.vuepress-markdown-body {
-  @apply dark:(bg-trueGray-900);
+<style lang="scss" scoped>
+// 文字样式
+:deep(#content) {
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  table,
+  p,
+  code,
+  ul,
+  ol {
+    --at-apply: dark-text-trueGray-50;
+  }
+
+  .md-link {
+    --at-apply: text-blue-500 decoration-none hover:(decoration-underline);
+  }
 }
 
-.v-md-editor-preview h1,h2,h3,h4,h5,h6,table,p,code,ul,ol {
-  @apply dark:(text-trueGray-50)
+// 任务列表样式
+:deep(.task-list-item) {
+  .task-list-item-checkbox {
+    --at-apply: border-1 border-zinc-300 border-solid bg-transparent cursor-default;
+  }
+}
+
+// 代码块样式
+:deep(code) {
+  &.hljs {
+    --at-apply: rounded-md;
+  }
+}
+
+:deep(.md-tip-details) {
+  --at-apply: p-6 bg-gray-200 mb-4 max-w-lg;
+  summary {}
+  p {}
+}
+
+// 提示块样式
+:deep(.md-tip-container) {
+  --at-apply:  max-w-lg px-2 px-8 border-0 border-solid border-l-8 mb-4 overflow-hidden;
+
+  &.tip {
+    --at-apply: border-l-emerald-500 bg-gray-100;
+  }
+
+  &.warning {
+    --at-apply: border-l-yellow-500 bg-yellow-500/20;
+    .md-tip-title {
+      --at-apply: color-yellow-500;
+    }
+    p:not(.md-tip-title) {
+      --at-apply: color-yellow-700;
+    }
+  }
+
+  &.danger {
+    --at-apply: border-l-rose-600 bg-rose-500/20;
+    .md-tip-title {
+      --at-apply: color-rose-500;
+    }
+    p:not(.md-tip-title) {
+      --at-apply: color-rose-700;
+    }
+  }
+
+  &.error {}
+
+  .md-tip-title {
+    --at-apply: font-semibold;
+    // p:not(.md-tip-title) {
+
+    // }
+  }
+}
+
+// 表格样式
+:deep(.md-table) {
+  --at-apply: block w-full overflow-auto border-collapse border-spacing-0;
+
+  tr {
+    --at-apply: bg-transparent border-1 border-Zinc-200 border-solid;
+
+    &:nth-child(2n) {
+      --at-apply: bg-gray-100 dark:(bg-zinc-800);
+    }
+  }
+
+  th {
+    --at-apply: font-semibold px-3 py-1.5 border-1 border-gray-200 border-solid;
+  }
+
+  td {
+    --at-apply: px-3 py-1.5 border-1 border-gray-200 border-solid dark:(text-white) md:(leading-8);
+  }
+
 }
 </style>

@@ -13,7 +13,7 @@ const _props = defineProps<{ item: PostItem }>()
       <div class="absolute inset-0 bg-cover blur-md" :style="{ 'background-image': `url(${item.posterUrl})` }" />
       <div class="relative flex-between bg-gray-100/80 p-3.5 dark:(bg-gray-800/70)">
         <div class="flex-1 pr-2">
-          <div class="block text-lg text-trueGray-500 dark:(text-trueGray-100)">
+          <div class="line-clamp-1 w-full text-lg text-trueGray-500 dark:(text-trueGray-100)">
             {{ item.title }}
           </div>
           <div class="line-clamp-1 mt-2 w-full text-sm text-trueGray-400 dark:(text-trueGray-300)">
