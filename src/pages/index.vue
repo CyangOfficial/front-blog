@@ -68,6 +68,9 @@ const loadMore = async () => {
         <IconNotice class="mr-4 align-middle text-2xl leading-4" filled />欢迎来到我的博客~
       </div>
 
+      <UAlert title="Heads up!" />
+      <UAvatar chip-color="primary" chip-text="" chip-position="top-right" size="sm" />
+
       <!-- section title -->
       <h2
         class="mb-8 mt-16 hidden border-b-1 border-gray-200 border-b-dashed pb-2 text-xl font-normal leading-4 text-gray-500 md:(block) dark:(text-gray-50)"
@@ -118,10 +121,10 @@ const loadMore = async () => {
 
 <style>
 .release-link {
-  @apply relative mr-4 flex-1 overflow-hidden rounded-xl last:(mr-0) no-underline text-center h-44 shadow before:(content-[attr(data-title)] w-full leading-[2.8rem] absolute left-72 index-10 bg-black top-6 color-white transition-all duration-400 linear z-10) after:(content-[attr(data-title)] w-full italic absolute bottom-6 z-10 -left-72 transition-all duration-400 linear text-gray-300 text-base) hover:(before:(left-0) after:(left-0))
+  --uno: relative mr-4 flex-1 overflow-hidden rounded-xl last:(mr-0) no-underline text-center h-44 shadow before:(content-[attr(data-title)] w-full leading-[2.8rem] absolute left-72 index-10 bg-black top-6 color-white transition-all duration-400 linear z-10) after:(content-[attr(data-title)] w-full italic absolute bottom-6 z-10 -left-72 transition-all duration-400 linear text-gray-300 text-base) hover:(before:(left-0) after:(left-0))
 }
 
 .release-mask {
-  @apply index-10 absolute left-0 top-0 h-full w-full bg-black bg-opacity-0 text-center group-hover: (bg-opacity-50 before:(left-0));
+  --uno: index-10 absolute left-0 top-0 h-full w-full bg-black bg-opacity-0 text-center group-hover: (bg-opacity-50 before:(left-0));
 }
 </style>

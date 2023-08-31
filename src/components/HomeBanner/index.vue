@@ -54,25 +54,25 @@ const bannerTitle = computed(() => {
 
   &::before,
   &::after {
-    @apply absolute top-0 w-full bg-transparent content-[attr(data-text)];
+    --uno: absolute top-0 w-full bg-transparent content-[attr(data-text)];
     clip: rect(0, 0, 0, 0);
   }
 
   &::before {
-    @apply -left-px [text-shadow:_1px_0_0_#ff3f1a]
+    --uno: -left-px [text-shadow:_1px_0_0_#ff3f1a]
   }
 
   &::after {
-    @apply left-px [text-shadow:_-1px_0_0_#00a7e0]
+    --uno: left-px [text-shadow:_-1px_0_0_#00a7e0]
   }
 
   &:hover {
     &::before {
-      @apply [text-shadow:_4px_0_#ff3f1a] animate-[glitch-loop-1_0.8s_infinite_ease-in-out_alternate-reverse]
+      --uno: [text-shadow:_4px_0_#ff3f1a] animate-[glitch-loop-1_0.8s_infinite_ease-in-out_alternate-reverse]
     }
 
     &::after {
-      @apply [text-shadow:_5px_0_#00a7e0] animate-[glitch-loop-2_0.8s_infinite_ease-in-out_alternate-reverse]
+      --uno: [text-shadow:_5px_0_#00a7e0] animate-[glitch-loop-2_0.8s_infinite_ease-in-out_alternate-reverse]
     }
   }
 }

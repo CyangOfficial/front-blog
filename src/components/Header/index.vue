@@ -215,11 +215,11 @@ const mobileSearch = async () => {
 
 <style>
 .nav-link {
-  @apply theme-animation relative text-gray-500 no-underline after: (absolute)
+  --uno: theme-animation relative text-gray-500 no-underline after: (absolute)
   dark:text-gray-50 block h-full flex-center before:(content-[""] theme-animation w-0 h-1.5 bg-amber-400 absolute bottom-0 left-0) hover:(before:w-full text-amber-400);
 }
 
 .svg-style {
-  @apply theme-animation mb-1 mr-1.5 inline-block fill-blue-500 align-middle text-xl text-gray-500 dark:text-white group-hover:(text-amber-400 animate-[shaking_5s_ease_infinite]);
+  --uno: theme-animation mb-1 mr-1.5 inline-block fill-blue-500 align-middle text-xl text-gray-500 dark:text-white group-hover:(text-amber-400 animate-[shaking_5s_ease_infinite]);
 }
 </style>

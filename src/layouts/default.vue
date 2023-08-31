@@ -85,35 +85,45 @@ if (process.client) {
 
 <template>
   <div ref="main" class="w-full dark:(bg-trueGray-900)">
-    <NuxtLoadingIndicator />
+    <UContainer>
+      <NuxtLoadingIndicator />
 
-    <Aplayer v-if="musicList.length > 0" v-model:music-list="musicList" />
+      <Aplayer v-if="musicList.length > 0" v-model:music-list="musicList" />
 
-    <!-- 移动端 侧边栏 -->
-    <Aside v-if="$isMobile" />
+      <!-- 移动端 侧边栏 -->
+      <Aside v-if="$isMobile" />
 
-    <!-- 移动端 右下角切换 -->
-    <div class="fixed bottom-8 right-4 z-80 box-border transform border border-transparent md:(hidden)">
-      <!-- 主题切换 -->
-      <div class="mb-4 h-10 w-10 flex-center select-none rounded bg-gray-50 shadow-md" @click="toggleDark()">
-        <IconMsun :class="{ hidden: !isDark }"
-          class="inline-block fill-blue-500 align-middle text-2xl text-gray-500 theme-animation" filled />
-        <IconMmoon :class="{ hidden: isDark }"
-          class="inline-block fill-blue-500 align-middle text-2xl text-gray-500 theme-animation" filled />
+      <!-- 移动端 右下角切换 -->
+      <div class="fixed bottom-8 right-4 z-80 box-border transform border border-transparent md:(hidden)">
+        <!-- 主题切换 -->
+        <div class="mb-4 h-10 w-10 flex-center select-none rounded bg-gray-50 shadow-md" @click="toggleDark()">
+          <IconMsun
+            :class="{ hidden: !isDark }"
+            class="inline-block fill-blue-500 align-middle text-2xl text-gray-500 theme-animation" filled
+          />
+          <IconMmoon
+            :class="{ hidden: isDark }"
+            class="inline-block fill-blue-500 align-middle text-2xl text-gray-500 theme-animation" filled
+          />
+        </div>
+
+        <!-- mobile 回到顶部 -->
+        <div v-if="$isMobile" class="z-50 h-10 w-10 flex-center select-none rounded bg-gray-50 shadow-md" @click="scrollTo">
+          <IconBackUp class="inline-block fill-blue-500 align-middle text-xl text-gray-500 theme-animation" filled />
+        </div>
       </div>
 
-      <!-- mobile 回到顶部 -->
-      <div v-if="$isMobile" class="z-50 h-10 w-10 flex-center select-none rounded bg-gray-50 shadow-md" @click="scrollTo">
-        <IconBackUp class="inline-block fill-blue-500 align-middle text-xl text-gray-500 theme-animation" filled />
-      </div>
-    </div>
+      <!-- PC 回到顶部 -->
+      <div
+        v-if="$isDesktop" class="cat top-[-70vh] bg-[url(~/assets/images/scroll.png)]"
+        :class="{ 'top-[-70vh]': y < 500, '!top-0': y > 500 }" @click="scrollTo"
+      />
+      <Header />
+      <slot />
+      <Footer />
+    </UContainer>
 
-    <!-- PC 回到顶部 -->
-    <div v-if="$isDesktop" class="cat top-[-70vh] bg-[url(~/assets/images/scroll.png)]"
-      :class="{ 'top-[-70vh]': y < 500, '!top-0': y > 500 }" @click="scrollTo" />
-    <Header />
-    <slot />
-    <Footer />
+    <UNotifications />
   </div>
 </template>
 
@@ -140,7 +150,7 @@ if (process.client) {
 }
 
 .cat {
-  @apply fixed right-16 h-[70vh] w-[4.67rem] transition-all duration-400 linear hidden md: (display: block) animate-[float_2s_infinite_linear] cursor-pointer bg-cover bg-center-bottom bg-no-repeat z-30;
+  --uno: fixed right-16 h-[70vh] w-[4.67rem] transition-all duration-400 linear hidden md: (display: block) animate-[float_2s_infinite_linear] cursor-pointer bg-cover bg-center-bottom bg-no-repeat z-30;
 }
 </style>
 

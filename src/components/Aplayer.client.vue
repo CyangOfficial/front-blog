@@ -50,8 +50,8 @@ onMounted(async () => {
   <div id="player" ref="player" />
 </template>
 
-<style>
+<style scoped>
 .aplayer-body {
-  @apply -left-17! hover:(left-0!);
+  --uno: -left-17!  hover: (left-0!);
 }
 </style>

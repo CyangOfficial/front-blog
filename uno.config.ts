@@ -104,7 +104,7 @@ export default defineConfig({
   ],
   transformers: [
     transformerDirectives({
-      applyVariable: ['--at-apply', '--uno-apply', '--uno'],
+      applyVariable: ['--uno'],
     }),
     transformerVariantGroup(),
   ],

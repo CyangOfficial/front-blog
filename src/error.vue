@@ -46,8 +46,8 @@ const back = () => {
   </button> -->
 </template>
 
-<style>
+<style scoped>
 .error-btn {
-  @apply h-10 w-32 border-1 border-amber-400 rounded-full border-solid text-base font-medium hover:(shadow-[0_0_4px_#F2A93B]);
+  --uno: h-10 w-32 border-1 border-amber-400 rounded-full border-solid text-base font-medium hover:(shadow-[0_0_4px_#F2A93B]);
 }
 </style>

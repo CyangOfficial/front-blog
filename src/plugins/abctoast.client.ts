@@ -1,19 +1,19 @@
-import { ModalBase, PushButton, useModal, useToast } from 'tailvue'
+// import { ModalBase, PushButton, useModal, useToast } from 'tailvue'
 
-const toast = useToast()
-const modal = useModal()
+// const toast = useToast()
+// const modal = useModal()
 
-export default defineNuxtPlugin((nuxtApp) => {
-  nuxtApp.vueApp.component('PushButton', PushButton)
-  nuxtApp.vueApp.component('ModalBase', ModalBase)
+// const toast = Toast.useToast()
+
+export default defineNuxtPlugin(() => {
+  // nuxtApp.vueApp.component('PushButton', PushButton)
+  // nuxtApp.vueApp.component('ModalBase', ModalBase)
   return {
     provide: {
-      toast,
-      modal,
+      a: 123,
     },
   }
 })
-
 
 // import * as Toast from 'vue-toast-notification'
 // import 'vue-toast-notification/dist/theme-bootstrap.css'

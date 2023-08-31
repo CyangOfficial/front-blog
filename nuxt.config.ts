@@ -29,6 +29,9 @@ export default defineNuxtConfig({
     // 'aplayer/dist/APlayer.min.css',
     // '~/assets/css/tailwind.css',
   ],
+  build: {
+    transpile: ['vue-toastification'],
+  },
   // components: {
   //   dirs: ['~/src/components'],
   // },
@@ -61,9 +64,8 @@ export default defineNuxtConfig({
   // ],
   // },
   modules: [
-    // 'nuxt-icons',
     'nuxt-svgo',
-    // '@nuxthq/ui',
+    '@nuxthq/ui',
     '@unocss/nuxt',
     ['@pinia/nuxt',
       {
@@ -71,8 +73,16 @@ export default defineNuxtConfig({
       },
     ],
     '@vueuse/nuxt',
-    // ['@tailvue/nuxt', { toast: true }],
+
   ],
+  ui: {
+    // global: true,
+    // icons: ['mdi', 'simple-icons'],
+    notifications: {
+      // Show toasts at the top right of the screen
+      position: 'top-0 right-0',
+    },
+  },
   // toast: {
   //   position: 'top-center',
   // },

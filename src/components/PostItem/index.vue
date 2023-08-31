@@ -86,6 +86,6 @@ onMounted(imgLazyLoad)
 
 <style>
 .poster-img {
-  @apply h-full w-full object-cover transition duration-400 md:(group-hover:scale-106 group-hover:transform);
+  --uno: h-full w-full object-cover transition duration-400 md:(group-hover:scale-106 group-hover:transform);
 }
 </style>

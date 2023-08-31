@@ -41,14 +41,14 @@ const addZero = (num: number) => {
 
 <style>
 .month-title {
-  @apply mb-2 mt-4 inline-block w-38 pr-7 whitespace-nowrap text-right text-lg font-bold text-trueGray-600 relative
+  --uno: mb-2 mt-4 inline-block w-38 pr-7 whitespace-nowrap text-right text-lg font-bold text-trueGray-600 relative
   before:(content-[""] absolute top-2 left-33.5 w-3.5 h-3.5 bg-sky-300 z-20 rounded-full)
   after:(content-[""] absolute w-5.5 h-5.5 bg-white rounded-full z-10 top-1 left-32.5 ring-gray-700 ring-offset-gray-700 ring-offset-1 shadow-lg)
   dark:(text-gray-100)
 }
 
 .day-title {
-  @apply relative
+  --uno: relative
   before:(content-[""] absolute top-1.5 -left-5 w-2.5 h-2.5 bg-sky-300 z-20 rounded-full)
   after:(content-[""] absolute w-4.5 h-4.5 bg-white rounded-full z-10 top-0.5 -left-6 ring-gray-700 ring-offset-gray-700 ring-offset-1 shadow-lg)
   dark:(text-gray-100) my-4 last:mb-4

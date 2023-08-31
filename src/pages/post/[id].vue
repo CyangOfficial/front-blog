@@ -8,7 +8,7 @@ import IconHeartHollow from '@/assets/icons/heart_hollow.svg'
 // import 'prismjs/themes/prism.css'
 // import '@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight.css'
 
-const { $toast, $mdit } = useNuxtApp()
+const { $mdit } = useNuxtApp()
 
 interface Ititles {
   title: string
@@ -37,10 +37,10 @@ const postItem = ref(detailResult.value?.data.items)
 // 错误处理
 if (error.value) {
   const errData = error.value.data
-  process.client && $toast({
-    type: 'error',
-    text: errData.message,
-  })
+  // process.client && $toast({
+  //   type: 'error',
+  //   text: errData.message,
+  // })
   throw createError({
     statusCode: errData.statusCode,
     message: errData.message || '服务器内部错误',

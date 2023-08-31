@@ -125,19 +125,19 @@ const hidePagination = computed(() => {
 
 <style>
 .page-number {
-  @apply text-md bg-center text-gray-700 h-8 w-8 cursor-pointer select-none border border-gray-300 rounded-full
+  --uno: text-md bg-center text-gray-700 h-8 w-8 cursor-pointer select-none border border-gray-300 rounded-full
   border-solid bg-transparent transition-all ease-linear duration-300
   dark:(text-gray-50 md:(group-hover:bg-gray-700))
   md:(group-hover:(bg-gray-200/30));
 }
 
 .current-page-number {
-  @apply bg-blue-200/40 text-blue-500 select-none !border-blue-400 !group-hover:(bg-blue-200/70)
+  --uno: bg-blue-200/40 text-blue-500 select-none !border-blue-400 !group-hover:(bg-blue-200/70)
   dark:(text-blue-400 bg-blue-400/30 border-blue-400/70 !group-hover:(bg-blue-400/40));
 }
 
 .page-turn {
-  @apply bg-center h-8 w-8 p-0 text-gray-700 overflow-hidden text-center border border-gray-400 select-none rounded-full border-solid bg-transparent text-xl
+  --uno: bg-center h-8 w-8 p-0 text-gray-700 overflow-hidden text-center border border-gray-400 select-none rounded-full border-solid bg-transparent text-xl
   active:(bg-gray-300)
   dark:(border-gray-400 text-gray-50 active:(bg-gray-600));
 }

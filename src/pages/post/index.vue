@@ -5,9 +5,10 @@
 // key2 extends key2 ? never : key1
 import IconRanking from '@/assets/icons/ranking.svg'
 import IconTag from '@/assets/icons/tag1.svg'
-// import { $toast } from '@tailvue/nuxt'
 
-const { $isDesktop, $toast } = useNuxtApp()
+const { $isDesktop } = useNuxtApp()
+const toast = useToast()
+
 const params = reactive({ page: 1, pageSize: 5 })
 const { getPost, getHotPost, getAllTags } = useApi()
 
@@ -15,7 +16,29 @@ const [{ data: postResult, pending, error: postErr }, { data: hotResult, pending
   getPost({ key: `post-${params.page}`, query: params }),
   getHotPost(),
   getAllTags(),
-]);
+])
+
+toast.add({
+  id: 'update_downloaded',
+  // title: 'Update downloaded.',
+  color: 'red',
+
+  description: '网络错误，请稍后重试！',
+  icon: 'i-octicon-desktop-download-24',
+  timeout: 0,
+  ui: {
+    position: 'fixed top-0 right-0',
+    background: 'bg-red dark:(bg-white)',
+    color: 'white',
+  },
+})
+
+if (process.client) {
+  // $toast({
+  //   type: 'danger',
+  //   message: errData.message,
+  // })
+}
 
 [postErr, hotErr, tagErr].forEach((error) => {
   const errData = error.value
@@ -29,8 +52,6 @@ const [{ data: postResult, pending, error: postErr }, { data: hotResult, pending
       //   type: 'danger',
       //   message: errData.message,
       // })
-      // $toast.error(errData.message)
-      $toast.show(errData.message)
     }
     // process.client && $toast.fire(errData.message)
     // throw createError({
@@ -55,8 +76,9 @@ watch(() => pending.value, (val) => {
 </script>
 
 <template>
-  <div class="">
-    <!-- <VueSweetalert2 /> -->
+  <div>
+    <!-- <UAlert title="test" description="You can add components to your app using the cli." /> -->
+
     <CommonBanner title="文 章" img-name="Attack-on-Titan.jpg" />
     <div class="mx-auto mt-14 flex px-3 container xl:max-w-7xl md:(px-0)">
       <!-- 文章 -->
